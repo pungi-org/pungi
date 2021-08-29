@@ -3,7 +3,7 @@ version: 2.1
 workflows:
   main:
     jobs:
-      - test-an-install:
+      - install-python:
           matrix:
             parameters:
               python-version:
@@ -14,14 +14,19 @@ workflows:
                 - 3.8.10
                 - 3.9.5
                 - 3.10.0rc1
+              ubuntu-version:
+                - "20.04"
+                - "18.04"
 
 jobs:
-  test-an-install:
+  install-python:
     parameters:
       python-version:
         type: string
+      ubuntu-version:
+        type: string
     docker:
-      - image: cimg/base:2021.07
+      - image: cimg/base:2021.07-<< parameters.ubuntu-version >>
     steps:
       - checkout
       - run:
