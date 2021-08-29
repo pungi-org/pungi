@@ -3,6 +3,7 @@ version: 2.1
 workflows:
   main:
     jobs:
+      - shell-tests
       - install-python:
           matrix:
             parameters:
@@ -17,18 +18,15 @@ workflows:
               ubuntu-version:
                 - "20.04"
                 - "18.04"
+          requires:
+            - shell-tests
 
-jobs:
-  install-python:
-    parameters:
-      python-version:
-        type: string
-      ubuntu-version:
-        type: string
-    docker:
-      - image: cimg/base:2021.07-<< parameters.ubuntu-version >>
+orbs:
+  bats: circleci/bats@1.0
+
+commands:
+  install-pyenv-deps:
     steps:
-      - checkout
       - run:
           name: "Install pyenv Dependencies"
           command: |
@@ -50,11 +48,40 @@ jobs:
               wget \
               xz-utils \
               zlib1g-dev
+  setup-pyenv:
+    steps:
       - run:
           name: "Setup pyenv"
           command: |
             echo 'export PYENV_ROOT="$HOME/project"' >> $BASH_ENV
             echo 'export PATH="$PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH"' >> $BASH_ENV
+      - run: pyenv --version
+
+jobs:
+  shell-tests:
+    docker:
+      - image: cimg/base:2021.07
+    steps:
+      - checkout
+      - install-pyenv-deps
+      - bats/install
+      - run:
+          name: "Run Bats Tests"
+          command: |
+            sudo apt install python-is-python3
+            bats test
+  install-python:
+    parameters:
+      python-version:
+        type: string
+      ubuntu-version:
+        type: string
+    docker:
+      - image: cimg/base:2021.07-<< parameters.ubuntu-version >>
+    steps:
+      - checkout
+      - install-pyenv-deps
+      - setup-pyenv
       - run:
           name: "Install and set Python version"
           command: |
@@ -63,7 +90,6 @@ jobs:
       - run:
           name: "Showcase what we have"
           command: |
-            pyenv --version
             pyenv version
             python --version
             python -m pip --version
