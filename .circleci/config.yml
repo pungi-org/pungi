@@ -1,0 +1,82 @@
+version: 2.1
+
+workflows:
+  main:
+    jobs:
+      - test-an-install:
+          matrix:
+            parameters:
+              python-version:
+                - 2.7.18
+                - 3.5.10
+                - 3.6.13
+                - 3.7.10
+                - 3.8.10
+                - 3.9.5
+                - 3.10.0rc1
+
+jobs:
+  test-an-install:
+    parameters:
+      python-version:
+        type: string
+    docker:
+      - image: cimg/base:2021.07
+    steps:
+      - checkout
+      - run:
+          name: "Install pyenv Dependencies"
+          command: |
+            sudo apt-get update && sudo apt-get install -y \
+              build-essential \
+              curl \
+              make \
+              libbz2-dev \
+              libffi-dev \
+              liblzma-dev \
+              libncursesw5-dev \
+              libreadline-dev \
+              libssl-dev \
+              libsqlite3-dev \
+              libxml2-dev \
+              libxmlsec1-dev \
+              llvm \
+              tk-dev \
+              wget \
+              xz-utils \
+              zlib1g-dev
+      - run:
+          name: "Setup pyenv"
+          command: |
+            echo 'export PYENV_ROOT="$HOME/project"' >> $BASH_ENV
+            echo 'export PATH="$PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH"' >> $BASH_ENV
+      - run:
+          name: "Install and set Python version"
+          command: |
+            pyenv install << parameters.python-version >>
+            pyenv global << parameters.python-version >>
+      - run:
+          name: "Showcase what we have"
+          command: |
+            pyenv --version
+            pyenv version
+            python --version
+            python -m pip --version
+      - when:
+          condition:
+            matches:
+              pattern: "^3"
+              value: << parameters.python-version >>
+          steps:
+            - run:
+                name: "Test version of Python"
+                command: python3 --version | grep << parameters.python-version >>
+      - when:
+          condition:
+            matches:
+              pattern: "^2"
+              value: << parameters.python-version >>
+          steps:
+            - run:
+                name: "Test version of Python"
+                command: python --version | grep << parameters.python-version >>
