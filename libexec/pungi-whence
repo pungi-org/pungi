@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# Summary: List all Python versions that contain the given executable
+# Usage: pungi whence [--path] <command>
+
+set -e
+[ -n "$PUNGI_DEBUG" ] && set -x
+
+# Provide pungi completions
+if [ "$1" = "--complete" ]; then
+  echo --path
+  exec pungi-shims --short
+fi
+
+if [ "$1" = "--path" ]; then
+  print_paths="1"
+  shift
+else
+  print_paths=""
+fi
+
+whence() {
+  local command="$1"
+  pungi-versions --bare | while read -r version; do
+    path="$(pungi-prefix "$version")/bin/${command}"
+    if [ -x "$path" ]; then
+      [ "$print_paths" ] && echo "$path" || echo "$version"
+    fi
+  done
+}
+
+PUNGI_COMMAND="$1"
+if [ -z "$PUNGI_COMMAND" ]; then
+  pungi-help --usage whence >&2
+  exit 1
+fi
+
+result="$(whence "$PUNGI_COMMAND")"
+[ -n "$result" ] && echo "$result"

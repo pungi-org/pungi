@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# Usage: pungi completions <command> [arg1 arg2...]
+
+set -e
+[ -n "$PUNGI_DEBUG" ] && set -x
+
+COMMAND="$1"
+if [ -z "$COMMAND" ]; then
+  pungi-help --usage completions >&2
+  exit 1
+fi
+
+# Provide pungi completions
+if [ "$COMMAND" = "--complete" ]; then
+  exec pungi-commands
+fi
+
+COMMAND_PATH="$(command -v "pungi-$COMMAND" || command -v "pungi-sh-$COMMAND")"
+
+# --help is provided automatically
+echo --help
+
+if grep -iE "^([#%]|--|//) provide pungi completions" "$COMMAND_PATH" >/dev/null; then
+  shift
+  exec "$COMMAND_PATH" --complete "$@"
+fi

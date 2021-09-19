@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+set -e
+[ -n "$PUNGI_DEBUG" ] && set -x
+
+# Remove pungi-pip-rehash/libexec from PATH to avoid infinite loops in `pungi-which` (yyuu/pyenv#146)
+_PATH=":${PATH}:"
+_HERE="$(dirname "${BASH_SOURCE[0]}")" # remove this from PATH
+_PATH="${_PATH//:${_HERE}:/:}"
+_PATH="${_PATH#:}"
+_PATH="${_PATH%:}"
+PATH="${_PATH}"
+
+PUNGI_COMMAND_PATH="$(pungi-which "${PUNGI_REHASH_REAL_COMMAND}")"
+PUNGI_BIN_PATH="${PUNGI_COMMAND_PATH%/*}"
+
+export PATH="${PUNGI_BIN_PATH}:${PATH}"
+
+STATUS=0
+"$PUNGI_COMMAND_PATH" "$@" || STATUS="$?"
+
+# Run `pungi-rehash` after a successful installation.
+if [ "$STATUS" == "0" ]; then
+  pungi-rehash
+fi
+
+exit "$STATUS"

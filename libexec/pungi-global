@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+#
+# Summary: Set or show the global Python version(s)
+#
+# Usage: pungi global <version> <version2> <..>
+#
+# Sets the global Python version(s). You can override the global version at
+# any time by setting a directory-specific version with `pungi local'
+# or by setting the `PUNGI_VERSION' environment variable.
+#
+# <version> can be specified multiple times and should be a version
+# tag known to pungi.  The special version string `system' will use
+# your default system Python.  Run `pungi versions' for a list of
+# available Python versions.
+#
+# Example: To enable the python2.7 and python3.7 shims to find their
+#          respective executables you could set both versions with:
+#
+# 'pungi global 3.7.0 2.7.15'
+#
+
+
+set -e
+[ -n "$PUNGI_DEBUG" ] && set -x
+
+# Provide pungi completions
+if [ "$1" = "--complete" ]; then
+  echo system
+  exec pungi-versions --bare
+fi
+
+versions=("$@")
+PUNGI_VERSION_FILE="${PUNGI_ROOT}/version"
+
+if [ -n "$versions" ]; then
+  pungi-version-file-write "$PUNGI_VERSION_FILE" "${versions[@]}"
+else
+  OLDIFS="$IFS"
+  IFS=: versions=($(
+    pungi-version-file-read "$PUNGI_VERSION_FILE" ||
+    pungi-version-file-read "${PUNGI_ROOT}/global" ||
+    pungi-version-file-read "${PUNGI_ROOT}/default" ||
+    echo system
+  ))
+  IFS="$OLDIFS"
+  for version in "${versions[@]}"; do
+    echo "$version"
+  done
+fi

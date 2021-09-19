@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Summary: Explain how the current Python version is set
+set -e
+[ -n "$PUNGI_DEBUG" ] && set -x
+
+unset PUNGI_VERSION_ORIGIN
+
+OLDIFS="$IFS"
+IFS=$'\n' scripts=(`pungi-hooks version-origin`)
+IFS="$OLDIFS"
+for script in "${scripts[@]}"; do
+  source "$script"
+done
+
+if [ -n "$PUNGI_VERSION_ORIGIN" ]; then
+  echo "$PUNGI_VERSION_ORIGIN"
+elif [ -n "$PUNGI_VERSION" ]; then
+  echo "PUNGI_VERSION environment variable"
+else
+  pungi-version-file
+fi

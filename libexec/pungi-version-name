@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+# Summary: Show the current Python version
+set -e
+[ -n "$PUNGI_DEBUG" ] && set -x
+
+if [ -z "$PUNGI_VERSION" ]; then
+  PUNGI_VERSION_FILE="$(pungi-version-file)"
+  PUNGI_VERSION="$(pungi-version-file-read "$PUNGI_VERSION_FILE" || true)"
+fi
+
+OLDIFS="$IFS"
+IFS=$'\n' scripts=(`pungi-hooks version-name`)
+IFS="$OLDIFS"
+for script in "${scripts[@]}"; do
+  source "$script"
+done
+
+if [ -z "$PUNGI_VERSION" ] || [ "$PUNGI_VERSION" = "system" ]; then
+  echo "system"
+  exit
+fi
+
+version_exists() {
+  local version="$1"
+  [ -d "${PUNGI_ROOT}/versions/${version}" ]
+}
+
+versions=()
+OLDIFS="$IFS"
+{ IFS=:
+  any_not_installed=0
+  for version in ${PUNGI_VERSION}; do
+    if version_exists "$version" || [ "$version" = "system" ]; then
+      versions=("${versions[@]}" "${version}")
+    elif version_exists "${version#python-}"; then
+      versions=("${versions[@]}" "${version#python-}")
+    else
+      echo "pungi: version \`$version' is not installed (set by $(pungi-version-origin))" >&2
+      any_not_installed=1
+    fi
+  done
+}
+IFS="$OLDIFS"
+
+OLDIFS="$IFS"
+{ IFS=:
+  echo "${versions[*]}"
+}
+IFS="$OLDIFS"
+
+if [ "$any_not_installed" = 1 ]; then
+  exit 1
+fi

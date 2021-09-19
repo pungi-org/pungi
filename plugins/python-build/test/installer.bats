@@ -10,8 +10,8 @@ load test_helper
   cd usr
 
   assert [ -x bin/python-build ]
-  assert [ -x bin/pyenv-install ]
-  assert [ -x bin/pyenv-uninstall ]
+  assert [ -x bin/pungi-install ]
+  assert [ -x bin/pungi-uninstall ]
 
   assert [ -e share/python-build/2.7.2 ]
   assert [ -e share/python-build/pypy-2.0 ]

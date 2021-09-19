@@ -62,7 +62,7 @@ assert_build_log() {
   cached_tarball "yaml-0.1.6"
   cached_tarball "Python-3.6.2"
 
-  # pyenv/pyenv#1026
+  # pungi/pungi#1026
   stub uname false false
 
   stub uname '-s : echo Linux' '-s : echo Linux'
@@ -92,7 +92,7 @@ OUT
   cached_tarball "yaml-0.1.6"
   cached_tarball "Python-3.6.2"
 
-  # pyenv/pyenv#1026
+  # pungi/pungi#1026
   stub uname false false
 
   stub uname '-s : echo Linux' '-s : echo Linux'
@@ -131,7 +131,7 @@ OUT
   stub_make_install
   stub patch ' : echo patch "$@" | sed -E "s/\.[[:alnum:]]+$/.XXX/" >> build.log'
 
-  # pyenv/pyenv#1026
+  # pungi/pungi#1026
   stub uname false false
 
   TMPDIR="$TMP" install_fixture --patch definitions/needs-yaml <<<"diff --git a/script.py"
@@ -160,7 +160,7 @@ OUT
   brew_libdir="$TMP/homebrew-yaml"
   mkdir -p "$brew_libdir"
 
-  # pyenv/pyenv#1026
+  # pungi/pungi#1026
   stub uname false false
 
   stub uname '-s : echo Linux'
@@ -189,7 +189,7 @@ OUT
   readline_libdir="$TMP/homebrew-readline"
   mkdir -p "$readline_libdir"
 
-  # pyenv/pyenv#1026
+  # pungi/pungi#1026
   stub uname false false
 
   stub brew "--prefix readline : echo '$readline_libdir'"
@@ -219,7 +219,7 @@ OUT
   mkdir -p "$readline_libdir/include/readline"
   touch "$readline_libdir/include/readline/rlconf.h"
 
-  # pyenv/pyenv#1026
+  # pungi/pungi#1026
   stub uname false false
 
   stub brew
@@ -308,7 +308,7 @@ OUT
 @test "number of CPU cores is detected on FreeBSD" {
   cached_tarball "Python-3.6.2"
 
-  # pyenv/pyenv#1026
+  # pungi/pungi#1026
   stub uname false false
 
   stub uname '-s : echo FreeBSD' false false
@@ -336,7 +336,7 @@ OUT
 @test "setting PYTHON_MAKE_INSTALL_OPTS to a multi-word string" {
   cached_tarball "Python-3.6.2"
 
-  # pyenv/pyenv#1026
+  # pungi/pungi#1026
   stub uname false false false
 
   stub uname '-s : echo Linux'
@@ -362,7 +362,7 @@ OUT
 @test "setting MAKE_INSTALL_OPTS to a multi-word string" {
   cached_tarball "Python-3.6.2"
 
-  # pyenv/pyenv#1026
+  # pungi/pungi#1026
   stub uname false false false
 
   stub uname '-s : echo Linux'
@@ -399,7 +399,7 @@ OUT
 
   stub uname "-s : echo FreeBSD" "-r : echo 9.1" false
 
-  # pyenv/pyenv#1026
+  # pungi/pungi#1026
   stub uname false false false
 
   MAKE=gmake stub_make_install
@@ -416,7 +416,7 @@ OUT
 
   stub uname "-s : echo FreeBSD" "-r : echo 10.0-RELEASE" false
 
-  # pyenv/pyenv#1026
+  # pungi/pungi#1026
   stub uname false false false
 
   stub_make_install
@@ -432,7 +432,7 @@ OUT
 
   stub uname "-s : echo FreeBSD" "-r : echo 11.0-RELEASE" false
 
-  # pyenv/pyenv#1026
+  # pungi/pungi#1026
   stub uname false false false
 
   stub_make_install
