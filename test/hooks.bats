@@ -3,57 +3,57 @@
 load test_helper
 
 @test "prints usage help given no argument" {
-  run pyenv-hooks
-  assert_failure "Usage: pyenv hooks <command>"
+  run pungi-hooks
+  assert_failure "Usage: pungi hooks <command>"
 }
 
 @test "prints list of hooks" {
-  path1="${PYENV_TEST_DIR}/pyenv.d"
-  path2="${PYENV_TEST_DIR}/etc/pyenv_hooks"
-  PYENV_HOOK_PATH="$path1"
+  path1="${PUNGI_TEST_DIR}/pungi.d"
+  path2="${PUNGI_TEST_DIR}/etc/pungi_hooks"
+  PUNGI_HOOK_PATH="$path1"
   create_hook exec "hello.bash"
   create_hook exec "ahoy.bash"
   create_hook exec "invalid.sh"
   create_hook which "boom.bash"
-  PYENV_HOOK_PATH="$path2"
+  PUNGI_HOOK_PATH="$path2"
   create_hook exec "bueno.bash"
 
-  PYENV_HOOK_PATH="$path1:$path2" run pyenv-hooks exec
+  PUNGI_HOOK_PATH="$path1:$path2" run pungi-hooks exec
   assert_success
   assert_output <<OUT
-${PYENV_TEST_DIR}/pyenv.d/exec/ahoy.bash
-${PYENV_TEST_DIR}/pyenv.d/exec/hello.bash
-${PYENV_TEST_DIR}/etc/pyenv_hooks/exec/bueno.bash
+${PUNGI_TEST_DIR}/pungi.d/exec/ahoy.bash
+${PUNGI_TEST_DIR}/pungi.d/exec/hello.bash
+${PUNGI_TEST_DIR}/etc/pungi_hooks/exec/bueno.bash
 OUT
 }
 
 @test "supports hook paths with spaces" {
-  path1="${PYENV_TEST_DIR}/my hooks/pyenv.d"
-  path2="${PYENV_TEST_DIR}/etc/pyenv hooks"
-  PYENV_HOOK_PATH="$path1"
+  path1="${PUNGI_TEST_DIR}/my hooks/pungi.d"
+  path2="${PUNGI_TEST_DIR}/etc/pungi hooks"
+  PUNGI_HOOK_PATH="$path1"
   create_hook exec "hello.bash"
-  PYENV_HOOK_PATH="$path2"
+  PUNGI_HOOK_PATH="$path2"
   create_hook exec "ahoy.bash"
 
-  PYENV_HOOK_PATH="$path1:$path2" run pyenv-hooks exec
+  PUNGI_HOOK_PATH="$path1:$path2" run pungi-hooks exec
   assert_success
   assert_output <<OUT
-${PYENV_TEST_DIR}/my hooks/pyenv.d/exec/hello.bash
-${PYENV_TEST_DIR}/etc/pyenv hooks/exec/ahoy.bash
+${PUNGI_TEST_DIR}/my hooks/pungi.d/exec/hello.bash
+${PUNGI_TEST_DIR}/etc/pungi hooks/exec/ahoy.bash
 OUT
 }
 
 @test "resolves relative paths" {
-  PYENV_HOOK_PATH="${PYENV_TEST_DIR}/pyenv.d"
+  PUNGI_HOOK_PATH="${PUNGI_TEST_DIR}/pungi.d"
   create_hook exec "hello.bash"
   mkdir -p "$HOME"
 
-  PYENV_HOOK_PATH="${HOME}/../pyenv.d" run pyenv-hooks exec
-  assert_success "${PYENV_TEST_DIR}/pyenv.d/exec/hello.bash"
+  PUNGI_HOOK_PATH="${HOME}/../pungi.d" run pungi-hooks exec
+  assert_success "${PUNGI_TEST_DIR}/pungi.d/exec/hello.bash"
 }
 
 @test "resolves symlinks" {
-  path="${PYENV_TEST_DIR}/pyenv.d"
+  path="${PUNGI_TEST_DIR}/pungi.d"
   mkdir -p "${path}/exec"
   mkdir -p "$HOME"
   touch "${HOME}/hola.bash"
@@ -61,10 +61,10 @@ OUT
   touch "${path}/exec/bright.sh"
   ln -s "bright.sh" "${path}/exec/world.bash"
 
-  PYENV_HOOK_PATH="$path" run pyenv-hooks exec
+  PUNGI_HOOK_PATH="$path" run pungi-hooks exec
   assert_success
   assert_output <<OUT
 ${HOME}/hola.bash
-${PYENV_TEST_DIR}/pyenv.d/exec/bright.sh
+${PUNGI_TEST_DIR}/pungi.d/exec/bright.sh
 OUT
 }

@@ -19,7 +19,7 @@ PYTHON_BUILD_VERSION="20180424"
 OLDIFS="$IFS"
 
 set -E
-[ -n "$PYENV_DEBUG" ] && set -x
+[ -n "$PUNGI_DEBUG" ] && set -x
 
 exec 3<&2 # preserve original stderr at fd 3
 
@@ -1423,7 +1423,7 @@ build_package_mac_openssl() {
   # Install to a subdirectory since we don't want shims for bin/openssl.
   OPENSSL_PREFIX_PATH="${PREFIX_PATH}/openssl"
 
-  # Put openssl.conf, certs, etc in ~/.pyenv/versions/*/openssl/ssl
+  # Put openssl.conf, certs, etc in ~/.pungi/versions/*/openssl/ssl
   OPENSSLDIR="${OPENSSLDIR:-$OPENSSL_PREFIX_PATH/ssl}"
 
   # Tell Python to use this openssl for its extension.
@@ -1816,7 +1816,7 @@ build_package_ensurepip() {
 version() {
   local git_revision
   # Read the revision from git if the remote points to "python-build" repository
-  if GIT_DIR="$PYTHON_BUILD_INSTALL_PREFIX/../../.git" git remote -v 2>/dev/null | grep -q /pyenv; then
+  if GIT_DIR="$PYTHON_BUILD_INSTALL_PREFIX/../../.git" git remote -v 2>/dev/null | grep -q /pungi; then
     git_revision="$(GIT_DIR="$PYTHON_BUILD_INSTALL_PREFIX/../../.git" git describe --tags HEAD 2>/dev/null || true)"
     git_revision="${git_revision#v}"
   fi
@@ -1968,7 +1968,7 @@ else
 fi
 
 if [ -z "$PYTHON_BUILD_MIRROR_URL" ]; then
-  PYTHON_BUILD_MIRROR_URL="https://pyenv.github.io/pythons"
+  PYTHON_BUILD_MIRROR_URL="https://pungi.github.io/pythons"
   PYTHON_BUILD_DEFAULT_MIRROR=1
 else
   PYTHON_BUILD_MIRROR_URL="${PYTHON_BUILD_MIRROR_URL%/}"

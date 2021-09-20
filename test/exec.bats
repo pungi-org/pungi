@@ -5,7 +5,7 @@ load test_helper
 create_executable() {
   name="${1?}"
   shift 1
-  bin="${PYENV_ROOT}/versions/${PYENV_VERSION}/bin"
+  bin="${PUNGI_ROOT}/versions/${PUNGI_VERSION}/bin"
   mkdir -p "$bin"
   { if [ $# -eq 0 ]; then cat -
     else echo "$@"
@@ -15,26 +15,26 @@ create_executable() {
 }
 
 @test "fails with invalid version" {
-  export PYENV_VERSION="3.4"
-  run pyenv-exec python -V
-  assert_failure "pyenv: version \`3.4' is not installed (set by PYENV_VERSION environment variable)"
+  export PUNGI_VERSION="3.4"
+  run pungi-exec python -V
+  assert_failure "pungi: version \`3.4' is not installed (set by PUNGI_VERSION environment variable)"
 }
 
 @test "fails with invalid version set from file" {
-  mkdir -p "$PYENV_TEST_DIR"
-  cd "$PYENV_TEST_DIR"
+  mkdir -p "$PUNGI_TEST_DIR"
+  cd "$PUNGI_TEST_DIR"
   echo 2.7 > .python-version
-  run pyenv-exec rspec
-  assert_failure "pyenv: version \`2.7' is not installed (set by $PWD/.python-version)"
+  run pungi-exec rspec
+  assert_failure "pungi: version \`2.7' is not installed (set by $PWD/.python-version)"
 }
 
 @test "completes with names of executables" {
-  export PYENV_VERSION="3.4"
+  export PUNGI_VERSION="3.4"
   create_executable "fab" "#!/bin/sh"
   create_executable "python" "#!/bin/sh"
 
-  pyenv-rehash
-  run pyenv-completions exec
+  pungi-rehash
+  run pungi-completions exec
   assert_success
   assert_output <<OUT
 --help
@@ -49,14 +49,14 @@ hellos=(\$(printf "hello\\tugly world\\nagain"))
 echo HELLO="\$(printf ":%s" "\${hellos[@]}")"
 SH
 
-  export PYENV_VERSION=system
-  IFS=$' \t\n' run pyenv-exec env
+  export PUNGI_VERSION=system
+  IFS=$' \t\n' run pungi-exec env
   assert_success
   assert_line "HELLO=:hello:ugly:world:again"
 }
 
 @test "forwards all arguments" {
-  export PYENV_VERSION="3.4"
+  export PUNGI_VERSION="3.4"
   create_executable "python" <<SH
 #!$BASH
 echo \$0
@@ -66,10 +66,10 @@ for arg; do
 done
 SH
 
-  run pyenv-exec python -w "/path to/python script.rb" -- extra args
+  run pungi-exec python -w "/path to/python script.rb" -- extra args
   assert_success
   assert_output <<OUT
-${PYENV_ROOT}/versions/3.4/bin/python
+${PUNGI_ROOT}/versions/3.4/bin/python
   -w
   /path to/python script.rb
   --
@@ -81,35 +81,35 @@ OUT
 @test "sys.executable with system version (#98)" {
   system_python=$(which python3)
 
-  PYENV_VERSION="custom"
+  PUNGI_VERSION="custom"
   create_executable "python3" ""
-  unset PYENV_VERSION
+  unset PUNGI_VERSION
 
-  pyenv-rehash
-  run pyenv-exec python3 -c 'import sys; print(sys.executable)'
+  pungi-rehash
+  run pungi-exec python3 -c 'import sys; print(sys.executable)'
   assert_success "${system_python}"
 }
 
 @test 'PATH is not modified with system Python' {
   # Create a wrapper executable that verifies PATH.
-  PYENV_VERSION="custom"
-  create_executable "python3" '[[ "$PATH" == "${PYENV_TEST_DIR}/root/versions/custom/bin:"* ]] || { echo "unexpected:$PATH"; exit 2;}'
-  unset PYENV_VERSION
-  pyenv-rehash
+  PUNGI_VERSION="custom"
+  create_executable "python3" '[[ "$PATH" == "${PUNGI_TEST_DIR}/root/versions/custom/bin:"* ]] || { echo "unexpected:$PATH"; exit 2;}'
+  unset PUNGI_VERSION
+  pungi-rehash
 
   # Path is not modified with system Python.
-  run pyenv-exec python3 -c 'import os; print(os.getenv("PATH"))'
+  run pungi-exec python3 -c 'import os; print(os.getenv("PATH"))'
   assert_success "$PATH"
 
   # Path is modified with custom Python.
-  PYENV_VERSION=custom run pyenv-exec python3
+  PUNGI_VERSION=custom run pungi-exec python3
   assert_success
 
   # Path is modified with custom:system Python.
-  PYENV_VERSION=custom:system run pyenv-exec python3
+  PUNGI_VERSION=custom:system run pungi-exec python3
   assert_success
 
   # Path is not modified with system:custom Python.
-  PYENV_VERSION=system:custom run pyenv-exec python3 -c 'import os; print(os.getenv("PATH"))'
+  PUNGI_VERSION=system:custom run pungi-exec python3 -c 'import os; print(os.getenv("PATH"))'
   assert_success "$PATH"
 }

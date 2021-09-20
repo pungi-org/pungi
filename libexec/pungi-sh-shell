@@ -1,0 +1,121 @@
+#!/usr/bin/env bash
+#
+# Summary: Set or show the shell-specific Python version
+#
+# Usage: pungi shell <version>...
+#        pungi shell -
+#        pungi shell --unset
+#
+# Sets a shell-specific Python version by setting the `PUNGI_VERSION'
+# environment variable in your shell. This version overrides local
+# application-specific versions and the global version.
+#
+# <version> should be a string matching a Python version known to pungi.
+# The special version string `system' will use your default system Python.
+# Run `pungi versions' for a list of available Python versions.
+#
+# When `-` is passed instead of the version string, the previously set
+# version will be restored. With `--unset`, the `PUNGI_VERSION`
+# environment variable gets unset, restoring the environment to the
+# state before the first `pungi shell` call.
+
+set -e
+[ -n "$PUNGI_DEBUG" ] && set -x
+
+# Provide pungi completions
+if [ "$1" = "--complete" ]; then
+  echo --unset
+  echo system
+  exec pungi-versions --bare
+fi
+
+versions=("$@")
+shell="$(basename "${PUNGI_SHELL:-$SHELL}")"
+
+if [ -z "$versions" ]; then
+  if [ -z "$PUNGI_VERSION" ]; then
+    echo "pungi: no shell-specific version configured" >&2
+    exit 1
+  else
+    echo 'echo "$PUNGI_VERSION"'
+    exit
+  fi
+fi
+
+if [ "$versions" = "--unset" ]; then
+  case "$shell" in
+  fish )
+    echo 'set -gu PUNGI_VERSION_OLD "$PUNGI_VERSION"'
+    echo "set -e PUNGI_VERSION"
+    ;;
+  * )
+    echo 'PUNGI_VERSION_OLD="${PUNGI_VERSION-}"'
+    echo "unset PUNGI_VERSION"
+    ;;
+  esac
+  exit
+fi
+
+if [ "$versions" = "-" ]; then
+  case "$shell" in
+  fish )
+    cat <<EOS
+if set -q PUNGI_VERSION_OLD
+  if [ -n "\$PUNGI_VERSION_OLD" ]
+    set PUNGI_VERSION_OLD_ "\$PUNGI_VERSION"
+    set -gx PUNGI_VERSION "\$PUNGI_VERSION_OLD"
+    set -gu PUNGI_VERSION_OLD "\$PUNGI_VERSION_OLD_"
+    set -e PUNGI_VERSION_OLD_
+  else
+    set -gu PUNGI_VERSION_OLD "\$PUNGI_VERSION"
+    set -e PUNGI_VERSION
+  end
+else
+  echo "pungi: PUNGI_VERSION_OLD is not set" >&2
+  false
+end
+EOS
+    ;;
+  * )
+    cat <<EOS
+if [ -n "\${PUNGI_VERSION_OLD+x}" ]; then
+  if [ -n "\$PUNGI_VERSION_OLD" ]; then
+    PUNGI_VERSION_OLD_="\$PUNGI_VERSION"
+    export PUNGI_VERSION="\$PUNGI_VERSION_OLD"
+    PUNGI_VERSION_OLD="\$PUNGI_VERSION_OLD_"
+    unset PUNGI_VERSION_OLD_
+  else
+    PUNGI_VERSION_OLD="\$PUNGI_VERSION"
+    unset PUNGI_VERSION
+  fi
+else
+  echo "pungi: PUNGI_VERSION_OLD is not set" >&2
+  false
+fi
+EOS
+    ;;
+  esac
+  exit
+fi
+
+# Make sure the specified version is installed.
+if pungi-prefix "${versions[@]}" >/dev/null; then
+  OLDIFS="$IFS"
+  IFS=: version="${versions[*]}"
+  IFS="$OLDIFS"
+  if [ "$version" != "$PUNGI_VERSION" ]; then
+    case "$shell" in
+    fish )
+      echo 'set -gu PUNGI_VERSION_OLD "$PUNGI_VERSION"'
+      echo "set -gx PUNGI_VERSION \"$version\""
+      ;;
+    * )
+      echo 'PUNGI_VERSION_OLD="${PUNGI_VERSION-}"'
+      echo "export PUNGI_VERSION=\"${version}\""
+      ;;
+    esac
+  fi
+else
+  echo "false"
+  exit 1
+fi

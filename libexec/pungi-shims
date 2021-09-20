@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# Summary: List existing pungi shims
+# Usage: pungi shims [--short]
+
+set -e
+[ -n "$PUNGI_DEBUG" ] && set -x
+
+# Provide pungi completions
+if [ "$1" = "--complete" ]; then
+  echo --short
+  exit
+fi
+
+shopt -s nullglob
+
+for command in "${PUNGI_ROOT}/shims/"*; do
+  if [ "$1" = "--short" ]; then
+    echo "${command##*/}"
+  else
+    echo "$command"
+  fi
+done | sort

@@ -26,10 +26,10 @@ RUN apt-get update -y \
         git \
     && rm -rf /var/lib/apt/lists/*
 
-ENV PYENV_ROOT "/pyenv"
-ENV PATH "$PYENV_ROOT/bin:$PATH"
+ENV PUNGI_ROOT "/pungi"
+ENV PATH "$PUNGI_ROOT/bin:$PATH"
 
-COPY . /pyenv
+COPY . /pungi
 
-RUN eval "$(pyenv init -)"
+RUN eval "$(pungi init -)"
 

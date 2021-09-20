@@ -1,0 +1,137 @@
+#!/usr/bin/env bash
+set -e
+
+if [ "$1" = "--debug" ]; then
+  export PUNGI_DEBUG=1
+  shift
+fi
+
+if [ -n "$PUNGI_DEBUG" ]; then
+  # https://wiki-dev.bash-hackers.org/scripting/debuggingtips#making_xtrace_more_useful
+  export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
+  set -x
+fi
+
+abort() {
+  { if [ "$#" -eq 0 ]; then cat -
+    else echo "pungi: $*"
+    fi
+  } >&2
+  exit 1
+}
+
+if enable -f "${BASH_SOURCE%/*}"/../libexec/pungi-realpath.dylib realpath 2>/dev/null; then
+  abs_dirname() {
+    local path
+    path="$(realpath "$1")"
+    echo "${path%/*}"
+  }
+else
+  [ -z "$PUNGI_NATIVE_EXT" ] || abort "failed to load \`realpath' builtin"
+
+  READLINK=$(type -P greadlink readlink | head -1)
+  [ -n "$READLINK" ] || abort "cannot find readlink - are you missing GNU coreutils?"
+
+  resolve_link() {
+    $READLINK "$1"
+  }
+
+  abs_dirname() {
+    local path="$1"
+
+    # Use a subshell to avoid changing the current path
+    (
+    while [ -n "$path" ]; do
+      cd_path="${path%/*}"
+      if [[ "$cd_path" != "$path" ]]; then
+        cd "$cd_path"
+      fi
+      name="${path##*/}"
+      path="$(resolve_link "$name" || true)"
+    done
+
+    echo "$PWD"
+    )
+  }
+fi
+
+if [ -z "${PUNGI_ROOT}" ]; then
+  PUNGI_ROOT="${HOME}/.pungi"
+else
+  PUNGI_ROOT="${PUNGI_ROOT%/}"
+fi
+export PUNGI_ROOT
+
+if [ -z "${PUNGI_DIR}" ]; then
+  PUNGI_DIR="$PWD"
+fi
+
+if [ ! -d "$PUNGI_DIR" ] || [ ! -e "$PUNGI_DIR" ]; then
+  abort "cannot change working directory to \`$PUNGI_DIR'"
+fi
+
+PUNGI_DIR=$(cd "$PUNGI_DIR" && echo "$PWD")
+export PUNGI_DIR
+
+
+shopt -s nullglob
+
+bin_path="$(abs_dirname "$0")"
+for plugin_bin in "${bin_path%/*}"/plugins/*/bin; do
+  PATH="${plugin_bin}:${PATH}"
+done
+for plugin_bin in "${PUNGI_ROOT}"/plugins/*/bin; do
+  PATH="${plugin_bin}:${PATH}"
+done
+export PATH="${bin_path}:${PATH}"
+
+PUNGI_HOOK_PATH="${PUNGI_HOOK_PATH}:${PUNGI_ROOT}/pungi.d"
+if [ "${bin_path%/*}" != "$PUNGI_ROOT" ]; then
+  # Add pungi's own `pungi.d` unless pungi was cloned to PUNGI_ROOT
+  PUNGI_HOOK_PATH="${PUNGI_HOOK_PATH}:${bin_path%/*}/pungi.d"
+fi
+PUNGI_HOOK_PATH="${PUNGI_HOOK_PATH}:/usr/local/etc/pungi.d:/etc/pungi.d:/usr/lib/pungi/hooks"
+for plugin_hook in "${PUNGI_ROOT}/plugins/"*/etc/pungi.d; do
+  PUNGI_HOOK_PATH="${PUNGI_HOOK_PATH}:${plugin_hook}"
+done
+PUNGI_HOOK_PATH="${PUNGI_HOOK_PATH#:}"
+export PUNGI_HOOK_PATH
+
+shopt -u nullglob
+
+
+command="$1"
+case "$command" in
+"" )
+  { pungi---version
+    pungi-help
+  } | abort
+  ;;
+-v | --version )
+  exec pungi---version
+  ;;
+-h | --help )
+  exec pungi-help
+  ;;
+* )
+  command_path="$(command -v "pungi-$command" || true)"
+  if [ -z "$command_path" ]; then
+    if [ "$command" == "shell" ]; then
+      abort "shell integration not enabled. Run \`pungi init' for instructions."
+    else
+      abort "no such command \`$command'"
+    fi
+  fi
+
+  shift 1
+  if [ "$1" = --help ]; then
+    if [[ "$command" == "sh-"* ]]; then
+      echo "pungi help \"$command\""
+    else
+      exec pungi-help "$command"
+    fi
+  else
+    exec "$command_path" "$@"
+  fi
+  ;;
+esac

@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+set -e
+[ -n "$PUNGI_DEBUG" ] && set -x
+
+# Provide pungi completions
+if [ "$1" = "--complete" ]; then
+  exec pungi-rehash --complete
+fi
+
+shell="$(basename "${PUNGI_SHELL:-$SHELL}")"
+
+# When pungi shell integration is enabled, delegate to pungi-rehash,
+# then tell the shell to empty its command lookup cache.
+pungi-rehash
+
+case "$shell" in
+fish )
+  # no rehash support
+  ;;
+* )
+  echo "hash -r 2>/dev/null || true"
+  ;;
+esac

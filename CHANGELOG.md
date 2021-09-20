@@ -32,14 +32,14 @@
 * Miniforge minor update to 4.10.1-5 (#1992)
 * Suggest that fish users init in interactive mode (#1991)
 * Add 3.10.0b3 (#1988)
-* Revert "Drop inferring version to install from `pyenv local`" (#1984)
+* Revert "Drop inferring version to install from `pungi local`" (#1984)
 * Use system Python3 for tests (#1979)
 * Check for shims in path with pure Bash (#1978)
 * Update setup instructions for debian, ubuntu etc. (#1977)
 
 ## Release 2.0.1
 
-* Drop inferring version to install from `pyenv local` (#1907)
+* Drop inferring version to install from `pungi local` (#1907)
 * Create mambaforge-4.10.1-4 (#1971)
 * Add 3.10.0b2 recipe (#1966)
 * Fix .bashrc `echo` install syntax error (#1965)
@@ -60,7 +60,7 @@
 * CPython 3.10-dev and 3.11-dev updated.
 * Bump OpenSSL to 1.1.1x for all Pythons that support MacOS 11
 * Update generated configuration files before run ./configure
-* Full shell configuration instructions placed into `pyenv init`
+* Full shell configuration instructions placed into `pungi init`
 * Prevent build from installing MacOS apps globally
 * ldflags_dirs is not needed for Python and causes failures
 * Report cache filename at download
@@ -96,9 +96,9 @@
 
 ## 1.2.24
 
-* GitHub Actions: Add $PYENV_ROOT/shims to $PATH (#1838)
+* GitHub Actions: Add $PUNGI_ROOT/shims to $PATH (#1838)
 * Add Python 3.10.0a6 (#1839)
-* Remove the "Using script's directory as PYENV_DIR if shim is invoked with a script argument" feature (#1814)
+* Remove the "Using script's directory as PUNGI_DIR if shim is invoked with a script argument" feature (#1814)
 * Update GET_PIP_URL (#1844)
 * GitHub Action to build Python versions on Ubuntu (#1794)
 * Make work in nounset (-u) mode (#1786)
@@ -124,15 +124,15 @@
 * python-build: Add miniconda3 4.8.2 (#1763)
 * python-build: Add Miniforge3-4.9.2 (#1782)
 * python-build: Fix download links for some PyPy and Stackless versions (#1692)
-* python-build: Add PYENV_DEBUG option (#1806)
+* python-build: Add PUNGI_DEBUG option (#1806)
 * python-build: Fix get-pip which dropped support for legacy Python (#1793)
-* pyenv-help: Fix `sed: RE error: illegal byte sequence` (#1714)
-* pyenv-versions: Fix not printing asterisk for current version in Bash 3 (#1815)
-* pyenv-prefix: "system" python - support cases where python3 is in PATH but not python (#1655)
-* pyenv-which: Added fallback to system executable (#1797)
-* pyenv-rehash: Use associative arrays for better performance on bash >= 4 (#1749)
-* pyenv-rehash: Try to sleep in 0.1 sec steps when acquiring lock (#1798)
-* pyenv: Use a better PS4 as recommended by Bash Hackers Wiki (#1810)
+* pungi-help: Fix `sed: RE error: illegal byte sequence` (#1714)
+* pungi-versions: Fix not printing asterisk for current version in Bash 3 (#1815)
+* pungi-prefix: "system" python - support cases where python3 is in PATH but not python (#1655)
+* pungi-which: Added fallback to system executable (#1797)
+* pungi-rehash: Use associative arrays for better performance on bash >= 4 (#1749)
+* pungi-rehash: Try to sleep in 0.1 sec steps when acquiring lock (#1798)
+* pungi: Use a better PS4 as recommended by Bash Hackers Wiki (#1810)
 
 ## 1.2.22
 
@@ -160,8 +160,8 @@
 * python-build: Add micropython-1.13 (#1704)
 * python-build: Fix PyPy download links (#1682)
 * python-build: Support for `PYTHON_BUILD_MIRROR_URL` when checksums do not exist (#1673)
-* pyenv: Search for plugins in `PYENV_DIR` and `PYENV_ROOT` (#1697)
-* pyenv-help: Fix 'sed: RE error: illegal byte sequence' (#1670)
+* pungi: Search for plugins in `PUNGI_DIR` and `PUNGI_ROOT` (#1697)
+* pungi-help: Fix 'sed: RE error: illegal byte sequence' (#1670)
 
 ## 1.2.20
 
@@ -169,7 +169,7 @@
 * python-build: Add CPython 3.8.4 (#1658)
 * python-build: Add CPython 3.7.8
 * python-build: Add CPython 3.6.11
-* pyenv-install: Make grep detection more robust (#1663)
+* pungi-install: Make grep detection more robust (#1663)
 * python-build: Fix has_tar_xz_support function on FreeBSD. (#1652)
 
 ## 1.2.19
@@ -192,7 +192,7 @@
 * python-build: Add Miniconda versions newer than 4.3.30 (#1361)
 * python-build: Add Micropython 1.12 (#1542)
 * python-build: Add Add CPython 3.9.0a4
-* pyenv: Fix sed illegal byte sequence error (#1521)
+* pungi: Fix sed illegal byte sequence error (#1521)
 
 ## 1.2.16
 
@@ -209,7 +209,7 @@
 * python-build: Add CPython 3.5.8 (#1441)
 * python-build: Add PyPy 7.2.0 (#1418)
 * python-build: Add anaconda3-2019.10 (#1427)
-* pyenv-help: Show text for all pyenv commands in pyenv-help (#1421)
+* pungi-help: Show text for all pungi commands in pungi-help (#1421)
 
 ## 1.2.14
 
@@ -217,7 +217,7 @@
 * python-build: Add Anaconda-2019.07 (#1382)
 * python-build: Add Micropython 1.11 (#1395)
 * python-build: Fix compatibility issues with Homebrew installed Tcl/Tk (#1397)
-* pyenv-exec: Do not use `exec -a`, do not mangle PATH for system Python (#1169)
+* pungi-exec: Do not use `exec -a`, do not mangle PATH for system Python (#1169)
 
 ## 1.2.13
 
@@ -277,7 +277,7 @@
 * python-build: Add CPython 3.7.0 (#1177)
 * python-build: Add micropython 1.9.4 (#1160)
 * python-build: Add anaconda[23]-5.2.0 (#1165)
-* pyenv: Fix `seq(1)` is not available on OpenBSD (#1166)
+* pungi: Fix `seq(1)` is not available on OpenBSD (#1166)
 
 ## 1.2.4
 
@@ -285,8 +285,8 @@
 * python-build: Add PyPy 6.0.0
 * python-build: Allow overriding HTTP client type based on environment variable `PYTHON_BUILD_HTTP_CLIENT` (#1126)
 * python-build: Use version-specific `get-pip.py` when installing 2.6 and 3.2 (#1131)
-* pyenv: Merge rbenv master (#1151)
-* pyenv: Make `pyenv-rehash` safer for multiple processes (#1092)
+* pungi: Merge rbenv master (#1151)
+* pungi: Make `pungi-rehash` safer for multiple processes (#1092)
 
 ## 1.2.3
 
@@ -327,7 +327,7 @@
 
 ## v1.1.4
 
-* pyenv: Workaround for scripts in `$PATH` which needs to be source'd (#100, #688, #953)
+* pungi: Workaround for scripts in `$PATH` which needs to be source'd (#100, #688, #953)
 * python-build: Add support for PyPy3 executables like `libpypy3-c.so` (#955, #956)
 * python-build: Add CPython 2.7.14, 3.4.7, 3.5.4 (#965, #971, #980)
 * python-build: Add Jython 2.7.1 (#973)
@@ -338,7 +338,7 @@
 
 ## v1.1.2
 
-* pyenv: Fix incorrect `pyenv --version` output in v1.1.1 (#947)
+* pungi: Fix incorrect `pungi --version` output in v1.1.1 (#947)
 
 ## v1.1.1
 
@@ -347,7 +347,7 @@
 ## v1.1.0
 
 * python-build: Add PyPy 5.7.1 (#888)
-* pyenv: Merge rbenv master (#927)
+* pungi: Merge rbenv master (#927)
 * python-build: Add PyPy 5.8.0 (#932)
 * python-build: Anaconda[23] 4.4.0
 * python-build: Add micropython-dev
@@ -360,17 +360,17 @@
 
 ## 1.0.9
 
-* pyenv: Migrate project site from https://github.com/yyuu/pyenv to https://github.com/pyenv/pyenv
+* pungi: Migrate project site from https://github.com/yyuu/pyenv to https://github.com/pyenv/pyenv
 * python-build: Add PyPy2 5.7.0 (#872, #868)
 * python-build: Add PyPy3 5.7.0-beta (#871, #869)
 * python-build: Add CPython 3.6.1 (#873)
 * python-build: Add Pyston 0.6.1 (#859)
-* python-build: Change default mirror site URL from https://yyuu.github.io/pythons to https://pyenv.github.io/pythons
+* python-build: Change default mirror site URL from https://yyuu.github.io/pythons to https://pungi.github.io/pythons
 * python-build: Upgrade OpenSSL from 1.0.2g to 1.0.2k (#850)
 
 ## 1.0.8
 
-* pyenv: Fix fish subcommand completion (#831)
+* pungi: Fix fish subcommand completion (#831)
 * python-build: Add Anaconda2/Anaconda3 4.3.0  (#824)
 * python-build: Use CPython on GitHub as the source repository of CPython development versions (#836, #837)
 * python-build: Fix checksum verification issue on the platform where OpenSSL isn't available (#840)
@@ -433,8 +433,8 @@
 
 ## 1.0.0
 
-* pyenv: Import latest changes from rbenv as of Aug 15, 2016 (#669)
-* pyenv: Add workaround for system python at `/bin/python` (#628)
+* pungi: Import latest changes from rbenv as of Aug 15, 2016 (#669)
+* pungi: Add workaround for system python at `/bin/python` (#628)
 * python-build: Import changes from ruby-build v20160602 (#668)
 
 ## 20160726
@@ -442,9 +442,9 @@
 * python-build: pypy-5.3.1: Remove stray text (#648)
 * python-build: Add CPython 3.6.0a3 (#657)
 * python-build: Add anaconda[23]-4.1.0
-* pyenv: Keep using `.tar.gz` archives if tar doesn't support `-J` (especially on BSD) (#654, #663)
-* pyenv: Fixed conflict between pyenv-virtualenv's `rehash` hooks of `envs.bash`
-* pyenv: Write help message of `sh-*` commands to stdout properly (#650, #651)
+* pungi: Keep using `.tar.gz` archives if tar doesn't support `-J` (especially on BSD) (#654, #663)
+* pungi: Fixed conflict between pungi-virtualenv's `rehash` hooks of `envs.bash`
+* pungi: Write help message of `sh-*` commands to stdout properly (#650, #651)
 
 ## 20160629
 
@@ -460,7 +460,7 @@
 * python-build: Added CPython 3.5.2 (#643)
 * python-build: Added CPython 3.4.5 (#643)
 * python-build: Added PyPy2 5.3 (#626)
-* pyenv: Skip creating shims for system executables bundled with Anaconda rather than ignoring them in `pyenv-which` (#594, #595, #599)
+* pungi: Skip creating shims for system executables bundled with Anaconda rather than ignoring them in `pungi-which` (#594, #595, #599)
 * python-build: Configured GCC as a requirement to build CPython prior to 2.4.4 (#613)
 * python-build: Use `aria2c` - ultra fast download utility if available (#534)
 
@@ -483,7 +483,7 @@
 ## 20160310
 
 * python-build: Add PyPy-5.0.0 (#555)
-* pyenv: Import recent changes from rbenv 1.0 (#549)
+* pungi: Import recent changes from rbenv 1.0 (#549)
 
 ## 20160303
 
@@ -491,34 +491,34 @@
 * python-build: Import recent changes from ruby-build 20160130
 * python-build: Compile with `--enable-unicode=ucs4` by default for CPython (#257, #542)
 * python-build: Switch download URL of Continuum products from HTTP to HTTPS (#543)
-* python-build: Added pypy-dev special case in pyenv-install to use py27 (#547)
+* python-build: Added pypy-dev special case in pungi-install to use py27 (#547)
 * python-build: Upgrade OpenSSL to 1.0.2g (#550)
 
 ## 20160202
 
-* pyenv: Run rehash automatically after `conda install`
+* pungi: Run rehash automatically after `conda install`
 * python-build: Add CPython 3.4.4 (#511)
 * python-build: Add anaconda[23]-2.4.1, miniconda[23]-3.19.0
 * python-build: Fix broken build definitions of CPython/Stackless 3.2.x (#531)
 
 ### 20151222
 
-* pyenv: Merge recent changes from rbenv as of 2015-12-14 (#504)
+* pungi: Merge recent changes from rbenv as of 2015-12-14 (#504)
 * python-build: Add a `OPENSSL_NO_SSL3` patch for CPython 2.6, 2.7, 3.0, 3.1, 3.2 and 3.3 series (#507, #511)
-* python-build: Stopped using mirror at pyenv.github.io for CPython since http://www.python.org is on fast.ly
+* python-build: Stopped using mirror at pungi.github.io for CPython since http://www.python.org is on fast.ly
 
 ### 20151210
 
-* pyenv: Add a default hook for Anaconda to look for original `$PATH` (#491)
-* pyenv: Skip virtualenv aliases on `pyenv versions --skip-aliases` (pyenv/pyenv-virtualenv#126)
+* pungi: Add a default hook for Anaconda to look for original `$PATH` (#491)
+* pungi: Skip virtualenv aliases on `pungi versions --skip-aliases` (pungi/pungi-virtualenv#126)
 * python-build: Add CPython 2.7.11, 3.5.1 (#494, #498)
 * python-build: Update OpenSSL to 1.0.1q (#496)
 * python-build: Adding SSL patch to build 2.7.3 on Debian (#495)
 
 ### 20151124
 
-* pyenv: Import recent changes from rbenv 5fb9c84e14c8123b2591d22e248f045c7f8d8a2c
-* pyenv: List anaconda-style virtual environments as a version in pyenv (#471)
+* pungi: Import recent changes from rbenv 5fb9c84e14c8123b2591d22e248f045c7f8d8a2c
+* pungi: List anaconda-style virtual environments as a version in pungi (#471)
 * python-build: Import recent changes from ruby-build v20151028
 * python-build: Add PyPy 4.0.1 (#489)
 * python-build: Add `miniconda*-3.18.3` (#477)
@@ -537,8 +537,8 @@
 
 ### 20151006
 
-* pyenv: Different behaviour when invoking .py script through symlink (#379, #404)
-* pyenv: Enabled Gitter on the project (#436, #444)
+* pungi: Different behaviour when invoking .py script through symlink (#379, #404)
+* pungi: Enabled Gitter on the project (#436, #444)
 * python-build: Add Jython 2.7.1b1
 * python-build: Install OpenSSL on OS X if no proper version is available (#429)
 
@@ -558,7 +558,7 @@
 * python-build: Add PyPy 2.6.1 (#433)
 * python-build: Add PyPy-STM 2.3 and 2.5.1 (#428)
 * python-build: Ignore user's site-packages on ensurepip/get-pip (#411)
-* pyenv: Import recent changes from ruby-build v20150818
+* pungi: Import recent changes from ruby-build v20150818
 
 #### 20150719
 
@@ -581,8 +581,8 @@
 
 #### 20150524
 
-* pyenv: Improve `pyenv version`, if there is one missing (#290)
-* pyenv: Improve pip-rehash to handle versions in command, like `pip2` and `pip3.4` (#368)
+* pungi: Improve `pungi version`, if there is one missing (#290)
+* pungi: Improve pip-rehash to handle versions in command, like `pip2` and `pip3.4` (#368)
 * python-build: Add CPython release; 2.7.10 (#380)
 * python-build: Add Miniconda/Miniconda3 3.9.1 and Anaconda/Anaconda3 2.2.0 (#375, #376)
 
@@ -598,7 +598,7 @@
 * python-build: Add Portable PyPy binaries from https://github.com/squeaky-pl/portable-pypy (#329)
 * python-build: Add CPython alpha release; 3.5.0a2 (#328)
 * python-build: Add pypy-2.5.1 (fixes #338)
-* pyenv: Import recent changes from rbenv 4d72eefffc548081f6eee2e54d3b9116b9f9ee8e
+* pungi: Import recent changes from rbenv 4d72eefffc548081f6eee2e54d3b9116b9f9ee8e
 
 #### 20150226
 
@@ -622,7 +622,7 @@
 
 #### 20141211
 
-* pyenv: Add built-in `pip-rehash` feature. You don't need to install [pyenv-pip-rehash](https://github.com/pyenv/pyenv-pip-rehash) anymore.
+* pungi: Add built-in `pip-rehash` feature. You don't need to install [pungi-pip-rehash](https://github.com/pyenv/pyenv-pip-rehash) anymore.
 * python-build: Add new CPython release; 2.7.9 (#284)
 * python-build: Add new PyPy releases; pypy3-2.4.0, pypy3-2.4.0-src (#277)
 * python-build: Add build definitions of PyPy nightly build
@@ -638,7 +638,7 @@
 
 #### 20141106
 
-* pyenv: Optimize pyenv-which. Thanks to @blueyed (#129)
+* pungi: Optimize pungi-which. Thanks to @blueyed (#129)
 * python-build: Add Miniconda/Miniconda3 3.7.0 and Anaconda/Anaconda3 2.1.0 (#260)
 * python-build: Use HTTPS for mirror download URLs (#262)
 * python-build: Set `rpath` for `--shared` build of PyPy (#244)
@@ -661,13 +661,13 @@
 
 #### 20140924
 
-* pyenv: Fix an unintended behavior when user does not have write permission on `$PYENV_ROOT` (#230)
-* pyenv: Fix a zsh completion issue (#232)
+* pungi: Fix an unintended behavior when user does not have write permission on `$PUNGI_ROOT` (#230)
+* pungi: Fix a zsh completion issue (#232)
 * python-build: Add new PyPy release; pypy-2.4.0, pypy-2.4.0-src (#241)
 
 #### 20140825
 
-* pyenv: Fix zsh completion with multiple words (#215)
+* pungi: Fix zsh completion with multiple words (#215)
 * python-build: Display the package name of `hg` as `mercurial` in message (#212)
 * python-build: Unset `PIP_REQUIRE_VENV` during build (#216)
 * python-build: Set `MACOSX_DEPLOYMENT_TARGET` from the product version of OS X (#219, #220)
@@ -692,7 +692,7 @@
 
 #### 20140614
 
-* pyenv: Change versioning schema (`v0.4.0-YYYYMMDD` -> `vYYYYMMDD`)
+* pungi: Change versioning schema (`v0.4.0-YYYYMMDD` -> `vYYYYMMDD`)
 * python-build: Add new PyPy release; pypy-2.3.1, pypy-2.3.1-src
 * python-build: Create symlinks for executables with version suffix (#182)
 * python-build: Use SHA2 as default digest algorithm to verify downloaded archives
@@ -714,7 +714,7 @@
 
 #### 0.4.0-20140516
 
-* pyenv: Prefer gawk over awk if both are available.
+* pungi: Prefer gawk over awk if both are available.
 * python-build: Add new PyPy release; pypy-2.3, pypy-2.3-src (#162)
 * python-build: Add new Anaconda release; anaconda-1.9.2 (#155)
 * python-build: Add new Miniconda releases; miniconda-3.3.0, minoconda-3.4.2, miniconda3-3.3.0, miniconda3-3.4.2
@@ -728,13 +728,13 @@
 
 #### 0.4.0-20140404
 
-* pyenv: Reads only the first word from version file. This is as same behavior as rbenv.
+* pungi: Reads only the first word from version file. This is as same behavior as rbenv.
 * python-build: Fix build of Tkinter with Tcl/Tk 8.6 (#131)
 * python-build: Fix build problem with Readline 6.3 (#126, #131, #149, #152)
 * python-build: Do not exit with errors even if some of modules are absent (#131)
 * python-build: MacOSX was misspelled as MaxOSX in `anaconda_architecture` (#136)
 * python-build: Use default `cc` as the C Compiler to build CPython (#148, #150)
-* python-build: Display value from `pypy_architecture` and `anaconda_architecture` on errors (pyenv/pyenv-virtualenv#18)
+* python-build: Display value from `pypy_architecture` and `anaconda_architecture` on errors (pungi/pungi-virtualenv#18)
 * python-build: Remove old development version; 2.6-dev
 * python-build: Update default setuptools version (3.3 -> 3.4.1)
 
@@ -764,8 +764,8 @@
 
 #### 0.4.0-20140123
 
-* pyenv: Always append the directory at the top of the `$PATH` to return proper value for `sys.executable` (#98)
-* pyenv: Unset `GREP_OPTIONS` to avoid issues of conflicting options (#101)
+* pungi: Always append the directory at the top of the `$PATH` to return proper value for `sys.executable` (#98)
+* pungi: Unset `GREP_OPTIONS` to avoid issues of conflicting options (#101)
 * python-build: Install `pip` with using `ensurepip` if available
 * python-build: Add support for framework installation (`--enable-framework`) of CPython (#55, #99)
 * python-build: Import recent changes from ruby-build v20140110.1
@@ -777,9 +777,9 @@
 
 #### 0.4.0-20140110
 
-* pyenv: Reliably detect parent shell in `pyenv init` (#93)
-* pyenv: Import recent changes from rbenv 0.4.0
-* pyenv: Import `bats` tests from rbenv 0.4.0
+* pungi: Reliably detect parent shell in `pungi init` (#93)
+* pungi: Import recent changes from rbenv 0.4.0
+* pungi: Import `bats` tests from rbenv 0.4.0
 * python-build: Add new CPython releases candidates; 3.4.0b2
 * python-build: Add ruby-build style patching feature (#91)
 * python-build: Set `RPATH` if `--enable-shared` was given (#65, #66, 82)
@@ -788,7 +788,7 @@
 * python-build: Activate friendly CPython during build if the one is not activated (8fa6b4a1847851919ad7857c6c42ed809a4d277b)
 * python-build: Fix broken install.sh
 * python-build: Import recent changes from ruby-build v20131225.1
-* version-ext-compat: Removed from default plugin. Please use [pyenv-version-ext](https://github.com/pyenv/pyenv-version-ext) instead.
+* version-ext-compat: Removed from default plugin. Please use [pungi-version-ext](https://github.com/pyenv/pyenv-version-ext) instead.
 
 #### 0.4.0-20131217
 
@@ -802,7 +802,7 @@
 * python-build: Add new PyPy releases; pypy-2.2.1, pypy-2.2.1-src
 * python-build: Update default setuptools version (1.3.2 -> 2.0)
 * python-build: Imported recent changes from ruby-build v20131211
-* pyenv: Fix pyenv-prefix to trim "/bin" in `pyenv prefix system` (#88)
+* pungi: Fix pungi-prefix to trim "/bin" in `pungi prefix system` (#88)
 
 #### 0.4.0-20131116
 
@@ -814,7 +814,7 @@
 
 #### 0.4.0-20131023
 
-* pyenv: Improved [fish shell](http://fishshell.com/) support
+* pungi: Improved [fish shell](http://fishshell.com/) support
 * python-build: Add new PyPy releases; pypy-2.1, pypy-2.1-src, pypy3-2.1-beta1, pypy3-2.1-beta1-src
 * python-build: Add ancient versions; 2.4, 2.4.1, 2.4.3, 2.4.4 and 2.4.5
 * python-build: Add alpha releases; 3.4.0a2, 3.4.0a3, 3.4.0a4
@@ -823,7 +823,7 @@
 
 #### 0.4.0-20130726
 
-* pyenv: Fix minor issue of variable scope in `pyenv versions`
+* pungi: Fix minor issue of variable scope in `pungi versions`
 * python-build: Update base version to ruby-build v20130628
 * python-build: Use brew managed OpenSSL and GNU Readline if they are available
 * python-build: Fix build of CPython 3.3+ on OS X (#29)
@@ -835,7 +835,7 @@
 
 #### 0.4.0-20130613
 
-* pyenv: Changed versioning schema. There are two parts; the former is the base rbenv version, and the latter is the date of release.
+* pungi: Changed versioning schema. There are two parts; the former is the base rbenv version, and the latter is the date of release.
 * python-build: Add `--debug` option to build CPython with debug symbols. (#11)
 * python-build: Add new CPython versions: 2.7.4, 2.7.5, 3.2.4, 3.2.5, 3.3.1, 3.3.2 (#12, #17)
 * python-build: Add `svnversion` patch for old CPython versions (#14)

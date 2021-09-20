@@ -1,10 +1,10 @@
 # python-build
 
-python-build is a [pyenv](https://github.com/pyenv/pyenv) plugin that
-provides a `pyenv install` command to compile and install different versions
+python-build is a [pungi](https://github.com/pyenv/pyenv) plugin that
+provides a `pungi install` command to compile and install different versions
 of Python on UNIX-like systems.
 
-You can also use python-build without pyenv in environments where you need
+You can also use python-build without pungi in environments where you need
 precise control over Python version installation.
 
 See the [list of releases](https://github.com/pyenv/pyenv/releases)
@@ -13,19 +13,19 @@ for changes in each version.
 
 ## Installation
 
-### Installing as a pyenv plugin (recommended)
+### Installing as a pungi plugin (recommended)
 
-Since python-build is bundled with pyenv by
+Since python-build is bundled with pungi by
 default, you do not need to do anything.
 
 ### Installing as a standalone program (advanced)
 
 Installing python-build as a standalone program will give you access to the
 `python-build` command for precise control over Python version installation. If you
-have pyenv installed, you will also be able to use the `pyenv install` command.
+have pungi installed, you will also be able to use the `pungi install` command.
 
     git clone git://github.com/pyenv/pyenv.git
-    cd pyenv/plugins/python-build
+    cd pungi/plugins/python-build
     ./install.sh
 
 This will install python-build into `/usr/local`. If you do not have write
@@ -40,16 +40,16 @@ copy of the repository, then re-run the install script.
 
 Mac OS X users can install python-build with the [Homebrew](http://brew.sh)
 package manager. This will give you access to the `python-build` command. If you
-have pyenv installed, you will also be able to use the `pyenv install` command.
+have pungi installed, you will also be able to use the `pungi install` command.
 
-*This is the recommended method of installation if you installed pyenv with
+*This is the recommended method of installation if you installed pungi with
 Homebrew.*
 
-    brew install pyenv
+    brew install pungi
 
 Or, if you would like to install the latest development release:
 
-    brew install --HEAD pyenv
+    brew install --HEAD pungi
 
 
 ## Usage
@@ -57,18 +57,18 @@ Or, if you would like to install the latest development release:
 Before you begin, you should ensure that your build environment has the proper
 system dependencies for compiling the wanted Python Version (see our [recommendations](https://github.com/pyenv/pyenv/wiki#suggested-build-environment)).
 
-### Using `pyenv install` with pyenv
+### Using `pungi install` with pungi
 
-To install a Python version for use with pyenv, run `pyenv install` with
+To install a Python version for use with pungi, run `pungi install` with
 exact name of the version you want to install. For example,
 
-    pyenv install 2.7.4
+    pungi install 2.7.4
 
 Python versions will be installed into a directory of the same name under
-`~/.pyenv/versions`.
+`~/.pungi/versions`.
 
-To see a list of all available Python versions, run `pyenv install --list`. You
-may also tab-complete available Python versions if your pyenv installation is
+To see a list of all available Python versions, run `pungi install --list`. You
+may also tab-complete available Python versions if your pungi installation is
 properly configured.
 
 ### Using `python-build` standalone
@@ -89,7 +89,7 @@ what's happening under the hood.
 
 ### Custom definitions
 
-Both `pyenv install` and `python-build` accept a path to a custom definition file
+Both `pungi install` and `python-build` accept a path to a custom definition file
 in place of a version name. Custom definitions let you develop and install
 versions of Python that are not yet supported by python-build.
 
@@ -131,7 +131,7 @@ You can set certain environment variables to control the build process.
 
 ### Applying patches to Python before compiling
 
-Both `pyenv install` and `python-build` support the `--patch` (`-p`) flag that
+Both `pungi install` and `python-build` support the `--patch` (`-p`) flag that
 signals that a patch from stdin should be applied to Python, Jython or PyPy
 source code before the `./configure` and compilation steps.
 
@@ -139,13 +139,13 @@ Example usage:
 
 ```sh
 # applying a single patch
-$ pyenv install --patch 2.7.10 < /path/to/python.patch
+$ pungi install --patch 2.7.10 < /path/to/python.patch
 
 # applying a patch from HTTP
-$ pyenv install --patch 2.7.10 < <(curl -sSL http://git.io/python.patch)
+$ pungi install --patch 2.7.10 < <(curl -sSL http://git.io/python.patch)
 
 # applying multiple patches
-$ cat fix1.patch fix2.patch | pyenv install --patch 2.7.10
+$ cat fix1.patch fix2.patch | pungi install --patch 2.7.10
 ```
 
 
@@ -155,12 +155,12 @@ You can build CPython with `--enable-shared` to install a version with
 shared object.
 
 If `--enable-shared` was found in `PYTHON_CONFIGURE_OPTS` or `CONFIGURE_OPTS`,
-`python-build` will automatically set `RPATH` to the pyenv's prefix directory.
+`python-build` will automatically set `RPATH` to the pungi's prefix directory.
 This means you don't have to set `LD_LIBRARY_PATH` or `DYLD_LIBRARY_PATH` for
 the version(s) installed with `--enable-shared`.
 
 ```sh
-$ env PYTHON_CONFIGURE_OPTS="--enable-shared" pyenv install 2.7.9
+$ env PYTHON_CONFIGURE_OPTS="--enable-shared" pungi install 2.7.9
 ```
 
 ### Checksum verification
@@ -200,26 +200,26 @@ The official python-build download mirror is provided by
 You can instruct python-build to keep a local cache of downloaded package files
 by setting the `PYTHON_BUILD_CACHE_PATH` environment variable. When set, package
 files will be kept in this directory after the first successful download and
-reused by subsequent invocations of `python-build` and `pyenv install`.
+reused by subsequent invocations of `python-build` and `pungi install`.
 
-The `pyenv install` command defaults this path to `~/.pyenv/cache`, so in most
+The `pungi install` command defaults this path to `~/.pungi/cache`, so in most
 cases you can enable download caching simply by creating that directory.
 
 ### Keeping the build directory after installation
 
-Both `python-build` and `pyenv install` accept the `-k` or `--keep` flag, which
+Both `python-build` and `pungi install` accept the `-k` or `--keep` flag, which
 tells python-build to keep the downloaded source after installation. This can be
 useful if you need to use `gdb` and `memprof` with Python.
 
-Source code will be kept in a parallel directory tree `~/.pyenv/sources` when
-using `--keep` with the `pyenv install` command. You should specify the
+Source code will be kept in a parallel directory tree `~/.pungi/sources` when
+using `--keep` with the `pungi install` command. You should specify the
 location of the source code with the `PYTHON_BUILD_BUILD_PATH` environment
 variable when using `--keep` with `python-build`.
 
 
 ## Getting Help
 
-Please see the [pyenv wiki](https://github.com/pyenv/pyenv/wiki) for solutions to common problems.
+Please see the [pungi wiki](https://github.com/pyenv/pyenv/wiki) for solutions to common problems.
 
 [wiki]: https://github.com/pyenv/pyenv/wiki
 
@@ -238,7 +238,7 @@ With docker installed:
 
 ```sh
 docker build -t my_container .
-docker run my_container pyenv install <my_version>
+docker run my_container pungi install <my_version>
 ```
 
 To enter a shell which will allow you to build and then test a python version,
@@ -254,21 +254,21 @@ as the layer including the build dependencies will be cached.
 
 Changes made inside the container will not be persisted.
 
-To test *all* new versions since a particular revision (e.g. `master`), `cd` to the root of your `pyenv` repo, and run this script:
+To test *all* new versions since a particular revision (e.g. `master`), `cd` to the root of your `pungi` repo, and run this script:
 
 ```sh
 set -e
 set -x
 
-docker build -t pyenv-test-container .
+docker build -t pungi-test-container .
 
 git diff --name-only master \
   | grep '^plugins/python-build/share/python-build/' \
   | awk -F '/' '{print $NF}' \
-  | xargs -I _ docker run pyenv-test-container pyenv install _
+  | xargs -I _ docker run pungi-test-container pungi install _
 ```
 
-- Build the docker image with the **t**ag pyenv-test-container
+- Build the docker image with the **t**ag pungi-test-container
 - Look for the names files changed since revision `master`
 - Filter out any which don't live where python-build keeps its build scripts
 - Look only at the file name (i.e. the python version name)

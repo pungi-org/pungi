@@ -3,29 +3,29 @@
 load test_helper
 
 @test "default" {
-  run pyenv-global
+  run pungi-global
   assert_success
   assert_output "system"
 }
 
-@test "read PYENV_ROOT/version" {
-  mkdir -p "$PYENV_ROOT"
-  echo "1.2.3" > "$PYENV_ROOT/version"
-  run pyenv-global
+@test "read PUNGI_ROOT/version" {
+  mkdir -p "$PUNGI_ROOT"
+  echo "1.2.3" > "$PUNGI_ROOT/version"
+  run pungi-global
   assert_success
   assert_output "1.2.3"
 }
 
-@test "set PYENV_ROOT/version" {
-  mkdir -p "$PYENV_ROOT/versions/1.2.3"
-  run pyenv-global "1.2.3"
+@test "set PUNGI_ROOT/version" {
+  mkdir -p "$PUNGI_ROOT/versions/1.2.3"
+  run pungi-global "1.2.3"
   assert_success
-  run pyenv-global
+  run pungi-global
   assert_success "1.2.3"
 }
 
-@test "fail setting invalid PYENV_ROOT/version" {
-  mkdir -p "$PYENV_ROOT"
-  run pyenv-global "1.2.3"
-  assert_failure "pyenv: version \`1.2.3' not installed"
+@test "fail setting invalid PUNGI_ROOT/version" {
+  mkdir -p "$PUNGI_ROOT"
+  run pungi-global "1.2.3"
+  assert_failure "pungi: version \`1.2.3' not installed"
 }

@@ -25,10 +25,10 @@ orbs:
   bats: circleci/bats@1.0
 
 commands:
-  install-pyenv-deps:
+  install-pungi-deps:
     steps:
       - run:
-          name: "Install pyenv Dependencies"
+          name: "Install Pungi Dependencies"
           command: |
             sudo apt-get update && sudo apt-get install -y \
               build-essential \
@@ -48,14 +48,14 @@ commands:
               wget \
               xz-utils \
               zlib1g-dev
-  setup-pyenv:
+  setup-pungi:
     steps:
       - run:
-          name: "Setup pyenv"
+          name: "Setup Pungi"
           command: |
-            echo 'export PYENV_ROOT="$HOME/project"' >> $BASH_ENV
-            echo 'export PATH="$PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH"' >> $BASH_ENV
-      - run: pyenv --version
+            echo 'export PUNGI_ROOT="$HOME/project"' >> $BASH_ENV
+            echo 'export PATH="$PUNGI_ROOT/shims:$PUNGI_ROOT/bin:$PATH"' >> $BASH_ENV
+      - run: pungi --version
 
 jobs:
   shell-tests:
@@ -63,7 +63,7 @@ jobs:
       - image: cimg/base:2021.07
     steps:
       - checkout
-      - install-pyenv-deps
+      - install-pungi-deps
       - bats/install
       - run:
           name: "Run Bats Tests"
@@ -80,17 +80,17 @@ jobs:
       - image: cimg/base:2021.07-<< parameters.ubuntu-version >>
     steps:
       - checkout
-      - install-pyenv-deps
-      - setup-pyenv
+      - install-pungi-deps
+      - setup-pungi
       - run:
           name: "Install and set Python version"
           command: |
-            pyenv install << parameters.python-version >>
-            pyenv global << parameters.python-version >>
+            pungi install << parameters.python-version >>
+            pungi global << parameters.python-version >>
       - run:
           name: "Showcase what we have"
           command: |
-            pyenv version
+            pungi version
             python --version
             python -m pip --version
       - when:

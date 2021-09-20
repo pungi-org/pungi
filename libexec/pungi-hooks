@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+# Summary: List hook scripts for a given pungi command
+# Usage: pungi hooks <command>
+
+set -e
+[ -n "$PUNGI_DEBUG" ] && set -x
+
+# Provide pungi completions
+if [ "$1" = "--complete" ]; then
+  echo exec
+  echo rehash
+  echo version-name
+  echo version-origin
+  echo which
+  exit
+fi
+
+PUNGI_COMMAND="$1"
+if [ -z "$PUNGI_COMMAND" ]; then
+  pungi-help --usage hooks >&2
+  exit 1
+fi
+
+if ! enable -f "${BASH_SOURCE%/*}"/pungi-realpath.dylib realpath 2>/dev/null; then
+  if [ -n "$PUNGI_NATIVE_EXT" ]; then
+    echo "pungi: failed to load \`realpath' builtin" >&2
+    exit 1
+  fi
+READLINK=$(type -P greadlink readlink | head -1)
+if [ -z "$READLINK" ]; then
+  echo "pungi: cannot find readlink - are you missing GNU coreutils?" >&2
+  exit 1
+fi
+
+resolve_link() {
+  $READLINK "$1"
+}
+
+realpath() {
+  local path="$1"
+  local name
+  # Use a subshell to avoid changing the current path
+  (
+  while [ -n "$path" ]; do
+    name="${path##*/}"
+    [ "$name" = "$path" ] || cd "${path%/*}"
+    path="$(resolve_link "$name" || true)"
+  done
+
+  echo "${PWD}/$name"
+  )
+}
+fi
+
+IFS=: hook_paths=($PUNGI_HOOK_PATH)
+
+shopt -s nullglob
+for path in "${hook_paths[@]}"; do
+  for script in "$path/$PUNGI_COMMAND"/*.bash; do
+    realpath "$script"
+  done
+done
+shopt -u nullglob

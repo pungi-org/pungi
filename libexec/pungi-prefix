@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+# Summary: Display prefix for a Python version
+# Usage: pungi prefix [<version>]
+#
+# Displays the directory where a Python version is installed. If no
+# version is given, `pungi prefix' displays the location of the
+# currently selected version.
+
+set -e
+[ -n "$PUNGI_DEBUG" ] && set -x
+
+# Provide pungi completions
+if [ "$1" = "--complete" ]; then
+  echo system
+  exec pungi-versions --bare
+fi
+
+if [ -n "$1" ]; then
+  OLDIFS="$IFS"
+  { IFS=:
+    export PUNGI_VERSION="$*"
+  }
+  IFS="$OLDIFS"
+elif [ -z "$PUNGI_VERSION" ]; then
+  PUNGI_VERSION="$(pungi-version-name)"
+fi
+
+PUNGI_PREFIX_PATHS=()
+OLDIFS="$IFS"
+{ IFS=:
+  for version in ${PUNGI_VERSION}; do
+    if [ "$version" = "system" ]; then
+      if PYTHON_PATH="$(PUNGI_VERSION="${version}" pungi-which python 2>/dev/null)" || \
+          PYTHON_PATH="$(PUNGI_VERSION="${version}" pungi-which python3 2>/dev/null)" || \
+          PYTHON_PATH="$(PUNGI_VERSION="${version}" pungi-which python2 2>/dev/null)"; then
+        PUNGI_PREFIX_PATH="${PYTHON_PATH%/bin/*}"
+        PUNGI_PREFIX_PATH="${PUNGI_PREFIX_PATH:-/}"
+      else
+        echo "pungi: system version not found in PATH" >&2
+        exit 1
+      fi
+    else
+      PUNGI_PREFIX_PATH="${PUNGI_ROOT}/versions/${version}"
+    fi
+    if [ -d "$PUNGI_PREFIX_PATH" ]; then
+      PUNGI_PREFIX_PATHS=("${PUNGI_PREFIX_PATHS[@]}" "$PUNGI_PREFIX_PATH")
+    else
+      echo "pungi: version \`${version}' not installed" >&2
+      exit 1
+    fi
+  done
+}
+IFS="$OLDIFS"
+
+OLDIFS="$IFS"
+{ IFS=:
+  echo "${PUNGI_PREFIX_PATHS[*]}"
+}
+IFS="$OLDIFS"
