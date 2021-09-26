@@ -1,5 +1,4 @@
 version: 2.1
-
 workflows:
   main:
     jobs:
@@ -20,10 +19,19 @@ workflows:
                 - "18.04"
           requires:
             - shell-tests
-
+      - release:
+          requires:
+            - install-python
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              # Simplified SemVer regex
+              only: /^v\d+\.\d+\.\d+$/
+          context: main
 orbs:
   bats: circleci/bats@1.0
-
+  gh: circleci/github-cli@1.0
 commands:
   install-pungi-deps:
     steps:
@@ -111,3 +119,12 @@ jobs:
             - run:
                 name: "Test version of Python"
                 command: python --version | grep << parameters.python-version >>
+  release:
+    docker:
+      - image: cimg/base:2021.07
+    steps:
+      - checkout
+      - gh/setup
+      - run:
+          name: "Create a release on GitHub"
+          command: gh release create $CIRCLE_TAG --title="Pungi $CIRCLE_TAG"
