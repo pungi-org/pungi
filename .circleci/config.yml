@@ -2,8 +2,16 @@ version: 2.1
 workflows:
   main:
     jobs:
-      - shell-tests
+      - shell-tests:
+          filters:
+            tags:
+              # Simplified SemVer regex
+              only: /^v\d+\.\d+\.\d+$/
       - install-python:
+          filters:
+            tags:
+              # Simplified SemVer regex
+              only: /^v\d+\.\d+\.\d+$/
           matrix:
             parameters:
               python-version:
