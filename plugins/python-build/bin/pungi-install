@@ -2,8 +2,8 @@
 #
 # Summary: Install a Python version using python-build
 #
-# Usage: pungi install [-f] [-kvp] <version>
-#        pungi install [-f] [-kvp] <definition-file>
+# Usage: pungi install [-f] [-kvpd] <version>
+#        pungi install [-f] [-kvpd] <definition-file>
 #        pungi install -l|--list
 #        pungi install --version
 #
@@ -19,6 +19,7 @@
 #   -v/--verbose       Verbose mode: print compilation status to stdout
 #   --version          Show version of python-build
 #   -g/--debug         Build a debug version
+#   -d/--direct        Install a CPython version not yet added to python-build
 #
 # For detailed information on installing Python versions with
 # python-build, including a list of environment variables for adjusting
@@ -46,6 +47,7 @@ if [ "$1" = "--complete" ]; then
   echo --verbose
   echo --version
   echo --debug
+  echo --direct
   exec python-build --definitions
 fi
 
@@ -72,6 +74,7 @@ unset KEEP
 unset VERBOSE
 unset HAS_PATCH
 unset DEBUG
+unset DIRECT
 
 parse_options "$@"
 for option in "${OPTIONS[@]}"; do
@@ -105,6 +108,9 @@ for option in "${OPTIONS[@]}"; do
   "version" )
     exec python-build --version
     ;;
+  "d" | "direct" )
+    DIRECT="-d"
+    ;;
   * )
     usage 1 >&2
     ;;
@@ -122,6 +128,10 @@ unset VERSION_NAME
 DEFINITION="${ARGUMENTS[0]}"
 [ -n "$DEFINITION" ] || DEFINITION="$(pungi-local 2>/dev/null || true)"
 [ -n "$DEFINITION" ] || usage 1 >&2
+
+# If the definition file doesn't exists, generate it when `--direct` is
+# specified.
+[ -n "$DIRECT" ] && definitions | grep "$DEFINITION" || "$PUNGI_ROOT"/helpers/add-python.sh $DEFINITION
 
 # Define `before_install` and `after_install` functions that allow
 # plugin hooks to register a string of code for execution before or

@@ -20,6 +20,7 @@ workflows:
                 - 3.6.13
                 - 3.7.10
                 - 3.8.10
+                - 3.9.4
                 - 3.9.5
               ubuntu-version:
                 - "20.04"
@@ -98,10 +99,17 @@ jobs:
       - install-pungi-deps
       - setup-pungi
       - run:
-          name: "Install and set Python version"
+          name: "Install & Set & Python version"
           command: |
-            pungi install << parameters.python-version >>
+            if [[ "<< parameters.python-version >>" == "3.9.5" ]];then
+              DIRECT="--direct"
+              echo "Installing Python using the --direct flag"
+            fi
+            pungi install $DIRECT << parameters.python-version >>
             pungi global << parameters.python-version >>
+      - run:
+          name: "Test Python version"
+          command: python --version 2>&1 | grep "<< parameters.python-version >>"
       - run:
           name: "Showcase what we have"
           command: |
