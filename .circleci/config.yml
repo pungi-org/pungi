@@ -13,6 +13,7 @@ workflows:
               # Simplified SemVer regex
               only: /^v\d+\.\d+\.\d+$/
           matrix:
+            alias: install-python-generic
             parameters:
               python-version:
                 - 2.7.18
@@ -27,9 +28,26 @@ workflows:
                 - "18.04"
           requires:
             - shell-tests
+      - install-python:
+          filters:
+            tags:
+              # Simplified SemVer regex
+              only: /^v\d+\.\d+\.\d+$/
+          matrix:
+            alias: install-python-extra
+            parameters:
+              python-version:
+                - 2.7.18
+                - 3.9.5
+              ubuntu-version:
+                - "20.04"
+          extra: true
+          requires:
+            - shell-tests
       - release:
           requires:
-            - install-python
+            - install-python-generic
+            - install-python-extra
           filters:
             branches:
               ignore: /.*/
@@ -90,6 +108,9 @@ jobs:
         type: string
       ubuntu-version:
         type: string
+      extra:
+        type: boolean
+        default: false
     docker:
       - image: cimg/base:2021.07-<< parameters.ubuntu-version >>
     steps:
@@ -103,8 +124,14 @@ jobs:
               DIRECT="--direct"
               echo "Installing Python using the --direct flag"
             fi
-            pungi install $DIRECT << parameters.python-version >>
-            pungi global << parameters.python-version >>
+            if [[ << parameters.extra >> ]];then
+              GLOBAL="--global"
+              echo "Installing Python using the --global flag"
+            fi
+            pungi install $DIRECT $GLOBAL << parameters.python-version >>
+            if [[ << parameters.extra >> ]];then
+              pungi global << parameters.python-version >>
+            fi
       - run:
           name: "Test Python version"
           command: python --version 2>&1 | grep "<< parameters.python-version >>"
