@@ -25,7 +25,8 @@ stub_system_python() {
 }
 
 @test "not even system python available" {
-  PATH="$(path_without python)" run pungi-versions
+  PATH="$(path_without python)"
+  PATH="$(path_without python3)" run pungi-versions
   assert_failure
   assert_output "Warning: no Python detected on the system"
 }

@@ -37,6 +37,7 @@ OUT
 }
 
 @test "prefix for invalid system" {
-  PATH="$(path_without python)" run pungi-prefix system
+  PATH="$(path_without python)"
+  PATH="$(path_without python3)" run pungi-prefix system
   assert_failure "pungi: system version not found in PATH"
 }
