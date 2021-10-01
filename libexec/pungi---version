@@ -12,12 +12,12 @@
 set -e
 [ -n "$PUNGI_DEBUG" ] && set -x
 
-version="0.2.3"
+version="v0.2.3"
 git_revision=""
 
 if cd "${BASH_SOURCE%/*}" 2>/dev/null && git remote -v 2>/dev/null | grep -q pungi; then
   git_revision="$(git describe --tags HEAD 2>/dev/null || true)"
-  git_revision="${git_revision#v}"
+  git_revision="${git_revision}"
 fi
 
-echo "pungi ${git_revision:-$version}"
+echo "Pungi ${git_revision:-$version}"
