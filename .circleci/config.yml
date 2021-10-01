@@ -1,4 +1,8 @@
 version: 2.1
+orbs:
+  bats: circleci/bats@1.0
+  gh: circleci/github-cli@1.0
+  brew: hubci/homebrew@0.2
 workflows:
   main:
     jobs:
@@ -51,9 +55,16 @@ workflows:
               # Simplified SemVer regex
               only: /^v\d+\.\d+\.\d+$/
           context: main
-orbs:
-  bats: circleci/bats@1.0
-  gh: circleci/github-cli@1.0
+      - brew/update-tap:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              # Simplified SemVer regex
+              only: /^v\d+\.\d+\.\d+$/
+          tap-url: git@github.com:pungi-org/homebrew-tap.git
+          formula-name: pungi
+          target-url: git@github.com:pungi-org/pungi.git
 commands:
   install-pungi-deps:
     steps:
