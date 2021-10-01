@@ -56,6 +56,8 @@ workflows:
               only: /^v\d+\.\d+\.\d+$/
           context: main
       - brew/update-tap:
+          requires:
+            - release
           filters:
             branches:
               ignore: /.*/
