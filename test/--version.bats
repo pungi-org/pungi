@@ -19,7 +19,7 @@ git_commit() {
   assert [ ! -e "$PUNGI_ROOT" ]
   run pungi---version
   assert_success
-  [[ $output == "pungi "?.?.* ]]
+  [[ $output == "Pungi v"?.?.* ]]
 }
 
 @test "doesn't read version from non-pungi repo" {
@@ -30,7 +30,7 @@ git_commit() {
 
   run pungi---version
   assert_success
-  [[ $output == "pungi "?.?.* ]]
+  [[ $output == "Pungi v"?.?.* ]]
 }
 
 @test "reads version from git repo" {
@@ -42,7 +42,7 @@ git_commit() {
   git_commit
 
   run pungi---version
-  assert_success "pungi 0.4.1-2-g$(git rev-parse --short HEAD)"
+  assert_success "Pungi v0.4.1-2-g$(git rev-parse --short HEAD)"
 }
 
 @test "prints default version if no tags in git repo" {
@@ -51,5 +51,5 @@ git_commit() {
   git_commit
 
   run pungi---version
-  [[ $output == "pungi "?.?.* ]]
+  [[ $output == "Pungi v"?.?.* ]]
 }
