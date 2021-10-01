@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# Summary: Display the version of pungi
+# Summary: Display the version of Pungi
 #
-# Displays the version number of this pungi release, including the
+# Displays the version number of this Pungi release, including the
 # current revision from git, if available.
 #
 # The format of the git revision is:
@@ -12,7 +12,7 @@
 set -e
 [ -n "$PUNGI_DEBUG" ] && set -x
 
-version="2.0.6"
+version="0.2.0"
 git_revision=""
 
 if cd "${BASH_SOURCE%/*}" 2>/dev/null && git remote -v 2>/dev/null | grep -q pungi; then
