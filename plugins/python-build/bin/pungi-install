@@ -3,6 +3,7 @@
 # Summary: Install a Python version using python-build
 #
 # Usage: pungi install [-f] [-kvpd] <version>
+#        pungi install --global <version>
 #        pungi install [-f] [-kvpd] <definition-file>
 #        pungi install -l|--list
 #        pungi install --version
@@ -10,6 +11,7 @@
 #   -l/--list          List all available versions
 #   -f/--force         Install even if the version appears to be installed already
 #   -s/--skip-existing Skip if the version appears to be installed already
+#   --global           After installing, set as global version
 #
 #   python-build options:
 #
@@ -48,6 +50,7 @@ if [ "$1" = "--complete" ]; then
   echo --version
   echo --debug
   echo --direct
+  echo --global
   exec python-build --definitions
 fi
 
@@ -75,6 +78,7 @@ unset VERBOSE
 unset HAS_PATCH
 unset DEBUG
 unset DIRECT
+unset GLOBAL
 
 parse_options "$@"
 for option in "${OPTIONS[@]}"; do
@@ -110,6 +114,9 @@ for option in "${OPTIONS[@]}"; do
     ;;
   "d" | "direct" )
     DIRECT="-d"
+    ;;
+  "global" )
+    GLOBAL=true
     ;;
   * )
     usage 1 >&2
@@ -288,6 +295,11 @@ if [ "$STATUS" == "0" ]; then
   pungi-rehash
 else
   cleanup
+fi
+
+# Optionally set the newly installed Python version
+if [[ $GLOBAL ]]; then
+  pungi-global $DEFINITION
 fi
 
 exit "$STATUS"
