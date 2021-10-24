@@ -93,68 +93,9 @@ function help_() {
 
   {
     echo
-    echo '# (The below instructions are intended for common'
-    echo '# shell setups. See the README for more guidance'
-    echo '# if they don'\''t apply and/or don'\''t work for you.)'
+    echo '# See the README for instructions on how to set up'
+    echo '# your shell environment for Pyenv.'
     echo 
-    case "$shell" in
-    fish )
-      echo "# Add pungi executable to PATH by running"
-      echo "# the following interactively:"
-      echo
-      echo 'set -Ux PUNGI_ROOT $HOME/.pungi'
-      echo 'set -U fish_user_paths $PUNGI_ROOT/bin $fish_user_paths'
-      echo
-      echo "# Load pungi automatically by appending"
-      echo "# the following to ~/.config/fish/config.fish:"
-      echo
-      echo 'status is-interactive; and pungi init --path | source'
-      echo 'pungi init - | source'
-      echo
-      echo "# If fish is not your login shell,"
-      echo "# add the following to ~/.profile:"
-      echo
-      echo 'export PUNGI_ROOT="$HOME/.pungi"'
-      echo 'export PATH="$PUNGI_ROOT/bin:$PATH"'
-      echo 'eval "$(pungi init --path)"'
-      echo
-      ;;
-    * )
-      echo '# Add pungi executable to PATH and'
-      echo '# enable shims by adding the following'
-      case "$shell" in
-      bash|ksh )
-        echo '# to ~/.profile:'
-        ;;
-      * )
-        echo '# to ~/.profile and '"${profile}"':'
-        ;;
-      esac
-      echo
-      echo 'export PUNGI_ROOT="$HOME/.pungi"'
-      echo 'export PATH="$PUNGI_ROOT/bin:$PATH"'
-      echo 'eval "$(pungi init --path)"'
-      echo
-      if [[ $shell == "bash" ]]; then
-        echo '# If your ~/.profile sources '"${rc}"','
-        echo '# the lines need to be inserted before the part'
-        echo '# that does that. See the README for another option.'
-        echo
-        echo '# If you have '"${profile}"', make sure that it'
-        echo '# also executes the above lines -- e.g. by'
-        echo '# copying them there or by sourcing ~/.profile'
-        echo
-      fi
-      echo "# Load pungi into the shell by adding"
-      echo "# the following to ${rc}:"
-      echo
-      echo 'eval "$(pungi init -)"'
-      echo
-      echo '# Make sure to restart your entire logon session'
-      echo '# for changes to profile files to take effect.'
-      echo
-      ;;
-    esac
   } >&2
 }
 

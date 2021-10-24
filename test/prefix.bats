@@ -24,6 +24,15 @@ load test_helper
   assert_success "$PUNGI_TEST_DIR"
 }
 
+#Arch has Python at sbin as well as bin
+@test "prefix for system in sbin" {
+  mkdir -p "${PUNGI_TEST_DIR}/sbin"
+  touch "${PUNGI_TEST_DIR}/sbin/python"
+  chmod +x "${PUNGI_TEST_DIR}/sbin/python"
+  PATH="${PUNGI_TEST_DIR}/sbin:$PATH" PUNGI_VERSION="system" run pungi-prefix
+  assert_success "$PUNGI_TEST_DIR"
+}
+
 @test "prefix for system in /" {
   mkdir -p "${BATS_TEST_DIRNAME}/libexec"
   cat >"${BATS_TEST_DIRNAME}/libexec/pungi-which" <<OUT
@@ -37,7 +46,6 @@ OUT
 }
 
 @test "prefix for invalid system" {
-  PATH="$(path_without python)"
-  PATH="$(path_without python3)" run pungi-prefix system
-  assert_failure "pungi: system version not found in PATH"
+  PATH="$(path_without python python2 python3)" run pungi-prefix system
+  assert_failure "Pungi: system version not found in PATH"
 }

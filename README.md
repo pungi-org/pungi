@@ -46,6 +46,10 @@ This project was forked from [rbenv](https://github.com/rbenv/rbenv) and
   * [Choosing the Python Version](#choosing-the-python-version)
   * [Locating the Python Installation](#locating-the-python-installation)
 * **[Installation](#installation)**
+  * [Prerequisites](#prerequisites)
+  * [Homebrew in macOS](#homebrew-in-macos)
+  * [Windows](#windows)
+  * [Automatic installer](#automatic-installer)
   * [Basic GitHub Checkout](#basic-github-checkout)
     * [Upgrading](#upgrading)
     * [Homebrew on macOS](#homebrew-on-macos)
@@ -168,11 +172,11 @@ We'd recommend to install pungi-virtualenv as well if you have some plan to play
 
 ## Installation
 
-### Prerequisites:
+### Prerequisites
 
-For pungi to install python correctly you should [**install the Python build dependencies**](https://github.com/pyenv/pyenv/wiki#suggested-build-environment).
+For Pungi to install python correctly you should [**install the Python build dependencies**](https://github.com/pyenv/pyenv/wiki#suggested-build-environment).
 
-### Homebrew on macOS
+### Homebrew in macOS
 
    1. Consider installing with [Homebrew](https://brew.sh):
       ```sh
@@ -181,9 +185,19 @@ For pungi to install python correctly you should [**install the Python build dep
       ```
    2. Then follow the rest of the post-installation steps under [Basic GitHub Checkout](https://github.com/pyenv/pyenv#basic-github-checkout), starting with #2 ("Configure your shell's environment for Pungi").
 
-If you're on Windows, consider using @kirankotari's [`pungi-win`](https://github.com/pungi-win/pungi-win) fork. (Pungi does not work in Windows outside the Windows Subsystem for Linux.)
+### Windows
 
-### The automatic installer
+Pungi does not officially support Windows and does not work in Windows outside
+the Windows Subsystem for Linux.
+Moreover, even there, the Pythons it installs are not native Windows versions
+but rather Linux versions run through a compatibility layer --
+so you won't get Windows-specific functionality.
+
+If you're in Windows, we recommend using @kirankotari's [`pyenv-win`](https://github.com/pyenv-win/pyenv-win) fork --
+which does install native Windows Python versions.
+
+
+### Automatic installer
 
 Visit our other project:
 https://github.com/pyenv/pyenv-installer
@@ -206,139 +220,155 @@ easy to fork and contribute any changes back upstream.
 
 2. **Configure your shell's environment for Pungi**
 
-   **Note:** The below instructions for specific shells are designed for common shell setups.  
-   If you have an uncommon setup and they don't work for you,
-   use the guidance text and the [Advanced Configuration](#advanced-configuration)
+   **Note:** The below instructions for specific shells are designed for common shell setups;
+   they also install shell functions into interactive shells only.  
+   If you have an uncommon setup and/or needs and they don't work for you,
+   use the [Advanced Configuration](#advanced-configuration)
    section below to figure out what you need to do in your specific case.
    
-   1. **Adjust the session-wide environment for your account.** Define
-   the `PUNGI_ROOT` environment variable to point to the path where
-   you cloned the Pungi repo, add the `pungi` command-line utility to your `PATH`,
-   run the output of `pungi init --path` to enable shims.
+   **General MacOS note:**
+   Make sure that your terminal app is configured to run the shell as a login shell
+   (especially if you're using an alternative terminal app and/or shell).
+   The configuration samples for MacOS are written under this assumption and won't work otherwise.
    
-      These commands need to be added into your shell startup files in such a way
-      that _they are executed only once per session, by its login shell._
-      This typically means they need to be added into a per-user shell-specific
-      `~/.*profile` file, _and_ into `~/.profile`, too, so that they are also
-      run by GUI managers (which typically act as a `sh` login shell).
+   - For **Bash**:
 
-      **MacOS note:** If you installed Pungi with Homebrew, you don't need
-      to add the `PUNGI_ROOT=` and `PATH=` lines.
-      You also don't need to add commands into `~/.profile` if your shell doesn't use it.
-   
-      - For **Bash**:
+      - **If your `~/.profile` sources `~/.bashrc` (Debian, Ubuntu, Mint):**
 
-         ~~~ bash
-         echo 'export PUNGI_ROOT="$HOME/.pungi"' >> ~/.profile
-         echo 'export PATH="$PUNGI_ROOT/bin:$PATH"' >> ~/.profile
-         echo 'eval "$(pungi init --path)"' >> ~/.profile
+         ~~~bash
+         # the sed invocation inserts the lines at the start of the file
+         # after any initial comment lines
+         sed -Ei -e '/^([^#]|$)/ {a \
+         export PYENV_ROOT="$HOME/.pyenv"
+         a \
+         export PATH="$PYENV_ROOT/bin:$PATH"
+         a \
+         ' -e ':a' -e '$!{n;ba};}' ~/.profile
+         echo 'eval "$(pyenv init --path)"' >>~/.profile
+
+         echo 'eval "$(pyenv init -)"' >> ~/.bashrc
          ~~~
 
-         - **If your `~/.profile` sources `~/.bashrc` (Debian, Ubuntu, Mint):**
+      - **If your `~/.bash_profile` sources `~/.bashrc` (Red Hat, Fedora, CentOS):**
 
-            Put these lines into `~/.profile` _before_ the part that sources `~/.bashrc`:
-            ~~~bash
-            export PUNGI_ROOT="$HOME/.pungi"
-            export PATH="$PUNGI_ROOT/bin:$PATH"
-            ~~~
+         ~~~ bash
+         sed -Ei -e '/^([^#]|$)/ {a \
+         export PYENV_ROOT="$HOME/.pyenv"
+         a \
+         export PATH="$PYENV_ROOT/bin:$PATH"
+         a \
+         ' -e ':a' -e '$!{n;ba};}' ~/.bash_profile
+         echo 'eval "$(pyenv init --path)"' >> ~/.bash_profile
+
+         echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.profile
+         echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.profile
+         echo 'eval "$(pyenv init --path)"' >> ~/.profile
+
+         echo 'eval "$(pyenv init -)"' >> ~/.bashrc
+         ~~~
+
+      - **If you have no `~/.bash_profile` and your `/etc/profile` sources `~/.bashrc` (SUSE):**
+
+         ~~~bash
+         echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.profile
+         echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.profile
+         echo 'eval "$(pyenv init --path)"' >> ~/.profile
+
+         echo 'if command -v pyenv >/dev/null; then eval "$(pyenv init -)"; fi' >> ~/.bashrc
+         ~~~
             
-            And put this line at the _bottom_ of `~/.profile`:
-            ~~~bash
-            eval "$(pungi init --path)"
-            ~~~
+      - **Otherwise if you have no stock `~/.profile` or `~/.bash_profile` (MacOS):**
+      
+         ~~~bash
+         echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.profile
+         echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.profile
+         echo 'eval "$(pyenv init --path)"' >> ~/.profile
+         echo 'if [ -n "$PS1" -a -n "$BASH_VERSION" ]; then source ~/.bashrc; fi' >> ~/.profile
 
-            <!--This is an alternative option and needn't be replicated to `pungi init`-->
-            Alternatively, for an automated installation, you can run the following:
-            ~~~ bash
-            echo -e 'if shopt -q login_shell; then' \
-                  '\n  export PUNGI_ROOT="$HOME/.pungi"' \
-                  '\n  export PATH="$PUNGI_ROOT/bin:$PATH"' \
-                  '\n eval "$(pungi init --path)"' \
-                  '\nfi' >> ~/.bashrc
-            echo -e 'if [ -z "$BASH_VERSION" ]; then'\
-                  '\n  export PUNGI_ROOT="$HOME/.pungi"'\
-                  '\n  export PATH="$PUNGI_ROOT/bin:$PATH"'\
-                  '\n  eval "$(pungi init --path)"'\
-                  '\nfi' >>~/.profile
-            ~~~
+         echo 'eval "$(pyenv init -)"' >> ~/.bashrc
+         ~~~
 
-         **Note:** If you have `~/.bash_profile`, make sure that it too executes the above-added commands,
-         e.g. by copying them there or by `source`'ing `~/.profile`.
+         In MacOS, make sure that your terminal app runs the shell as a login shell.
 
-      - For **Zsh**:
+      - **Temporary environments (CI, batch jobs):**
 
-         - **MacOS, if Pungi is installed with Homebrew:**
+         In CI/build environments, paths and the environment are usually already set up for you
+         in one of the above ways.
+         You may only need to install Pyenv as a shell function into the (noninteractive) shell
+         that runs the batch script, and only if you need subcommands that require `pyenv`
+         to be a shell function (e.g. `shell` and Pyenv-Virtualenv's `activate`).
 
-            ~~~ zsh
-            echo 'eval "$(pungi init --path)"' >> ~/.zprofile
-            ~~~
+         ~~~bash
+         echo 'eval "$(pyenv init -)"'
+         ~~~
          
-         - **MacOS, if Pungi is installed with a Git checkout:**
-         
-            ~~~ zsh
-            echo 'export PUNGI_ROOT="$HOME/.pungi"' >> ~/.zprofile
-            echo 'export PATH="$PUNGI_ROOT/bin:$PATH"' >> ~/.zprofile
-            echo 'eval "$(pungi init --path)"' >> ~/.zprofile
-            ~~~
+      **General Bash warning**: There are some systems where the `BASH_ENV` variable is configured
+      to point to `.bashrc`. On such systems, you should almost certainly put the
+      `eval "$(pyenv init -)"` line into `.bash_profile`, and **not** into `.bashrc`. Otherwise, you
+      may observe strange behaviour, such as `pyenv` getting into an infinite loop.
+      See [#264](https://github.com/pyenv/pyenv/issues/264) for details.
 
-         - **Other OSes:**
+
+   - For **Zsh**:
+
+      - **MacOS, if Pyenv is installed with Homebrew:**
+
+         ~~~ zsh
+         echo 'eval "$(pyenv init --path)"' >> ~/.zprofile
+      
+         echo 'eval "$(pyenv init -)"' >> ~/.zshrc
+         ~~~
          
-           Same as for Bash above, but add the commands into both `~/.profile`
-           and `~/.zprofile`.
+         Make sure that your terminal app runs the shell as a login shell.
+
+
+      - **MacOS, if Pyenv is installed with a Git checkout:**
+      
+         ~~~ zsh
+         echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.zprofile
+         echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.zprofile
+         echo 'eval "$(pyenv init --path)"' >> ~/.zprofile
+      
+         echo 'eval "$(pyenv init -)"' >> ~/.zshrc
+         ~~~
+
+         Make sure that your terminal app runs the shell as a login shell.
+
+      - **Other OSes:**
+      
+         ~~~ zsh
+         echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.zprofile
+         echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.zprofile
+         echo 'eval "$(pyenv init --path)"' >> ~/.zprofile
+         
+         echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.profile
+         echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.profile
+         echo 'eval "$(pyenv init --path)"' >> ~/.profile
+
+         echo 'eval "$(pyenv init -)"' >> ~/.zshrc
+         ~~~
         
       - For **Fish shell**:
 
         Execute this interactively:
+        
         ~~~ fish
         set -Ux PUNGI_ROOT $HOME/.pungi
         set -U fish_user_paths $PUNGI_ROOT/bin $fish_user_paths
         ~~~
 
         And add this to `~/.config/fish/config.fish`:
+        
         ~~~ fish
-        status is-interactive; and pungi init --path | source
+        status is-login; and pungi init --path | source
+        status is-interactive; and pungi init - | source
         ~~~
 
         If Fish is not your login shell, also follow the Bash/Zsh instructions to add to `~/.profile`.
 
       **Proxy note**: If you use a proxy, export `http_proxy` and `https_proxy`, too.
 
-   2. **Add `pungi` into your shell** by running the output of `pungi init -`
-     to enable autocompletion and all subcommands.
-   
-      This command needs to run at startup of any interactive shell instance.
-      In an interactive login shell, it needs to run _after_ the commands
-      from the previous step.
-
-      - For **bash**:
-        ~~~ bash
-        echo 'eval "$(pungi init -)"' >> ~/.bashrc
-        ~~~
-        
-        - **If your `/etc/profile` sources `~/.bashrc` (SUSE):**
-        
-          ~~~bash
-          echo 'if command -v pungi >/dev/null; then eval "$(pungi init -)"; fi' >> ~/.bashrc 
-          ~~~
-
-      - For **Zsh**:
-        ~~~ zsh
-        echo 'eval "$(pungi init -)"' >> ~/.zshrc
-        ~~~
-
-      - For **Fish shell**:
-        Add this to `~/.config/fish/config.fish`:
-        ~~~ fish
-        pungi init - | source
-        ~~~
-
-      **General warning**: There are some systems where the `BASH_ENV` variable is configured
-      to point to `.bashrc`. On such systems you should almost certainly put the above-mentioned line
-      `eval "$(pungi init -)"` into `.bash_profile`, and **not** into `.bashrc`. Otherwise you
-      may observe strange behaviour, such as `pungi` getting into an infinite loop.
-      See [#264](https://github.com/pyenv/pyenv/issues/264) for details.
-
-4. **Restart your login session for the changes to take effect.**
+4. **Restart your login session for the changes to profile files to take effect.**
    E.g. if you're in a GUI session, you need to fully log out and log back in.
    
    In MacOS, restarting terminal windows is enough (because MacOS runs shells
@@ -424,30 +454,52 @@ profile is doing.
 
 `pungi init` is the only command that crosses the line of loading
 extra commands into your shell. Coming from RVM, some of you might be
-opposed to this idea. Here's what `pungi init` actually does.
-Step 1 is done by `eval "$(pungi init --path)"`, the others are done by
-`eval "$(pungi init -)"`.
+opposed to this idea.
+
+Also see the [Environment variables](#environment-variables) section
+for the environment variables that control Pyenv's behavior.
 
 
-1. **Sets up your shims path.** This is the only requirement for pungi to
-   function properly. You can do this by hand by prepending
-   `$(pungi root)/shims` to your `$PATH`.
+* `eval "$(pyenv init --path)"`:
 
-2. **Installs autocompletion.** This is entirely optional but pretty
-   useful. Sourcing `$(pungi root)/completions/pungi.bash` will set that
-   up. There is also a `$(pungi root)/completions/pungi.zsh` for Zsh
-   users.
+   1. **Sets up your shims path.** This is the only requirement for pyenv to
+      function properly. You can do this by hand by prepending
+      `$(pyenv root)/shims` to your `$PATH`.
+   
+   `eval "$(pyenv init --path)"` is supposed to be run in your session's login
+   shell startup script -- so that all processes in the session get access to
+   Pyenv's functionality and it only runs once,
+   avoiding breaking `PATH` in nested shells
+   (e.g. shells started from editors/IDEs).
+   
+   In Linux, GUI managers typically act as a `sh` login shell, running
+   `/etc/profile` and `~/.profile` at their startup. MacOS' GUI doesn't do that,
+   so its terminal emulator apps run their shells as login shells by default
+   to compensate.
 
-3. **Rehashes shims.** From time to time you'll need to rebuild your
-   shim files. Doing this on init makes sure everything is up to
-   date. You can always run `pungi rehash` manually.
 
-4. **Installs the sh dispatcher.** This bit is also optional, but allows
-   pungi and plugins to change variables in your current shell, making
-   commands like `pungi shell` possible. The sh dispatcher doesn't do
-   anything crazy like override `cd` or hack your shell prompt, but if
-   for some reason you need `pungi` to be a real script rather than a
-   shell function, you can safely skip it.
+* `eval "$(pyenv init -)"`:
+
+   1. **Installs autocompletion.** This is entirely optional but pretty
+      useful. Sourcing `$(pyenv root)/completions/pyenv.bash` will set that
+      up. There is also a `$(pyenv root)/completions/pyenv.zsh` for Zsh
+      users.
+
+   2. **Rehashes shims.** From time to time you'll need to rebuild your
+      shim files. Doing this on init makes sure everything is up to
+      date. You can always run `pyenv rehash` manually.
+
+   3. **Installs `pyenv` into the current shell as a shell function.**
+      This bit is also optional, but allows
+      pyenv and plugins to change variables in your current shell, making
+      commands like `pyenv shell` possible. The sh dispatcher doesn't do
+      anything crazy like override `cd` or hack your shell prompt, but if
+      for some reason you need `pyenv` to be a real script rather than a
+      shell function, you can safely skip it.
+      
+   `eval "$(pyenv init -)"` is supposed to run at any interactive shell's
+   startup (including nested shells) so that you get completion and
+   convenience shell functions.
 
 To see exactly what happens under the hood for yourself, run `pungi init -`
 or `pungi init --path`.

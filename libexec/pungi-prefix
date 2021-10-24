@@ -33,10 +33,12 @@ OLDIFS="$IFS"
       if PYTHON_PATH="$(PUNGI_VERSION="${version}" pungi-which python 2>/dev/null)" || \
           PYTHON_PATH="$(PUNGI_VERSION="${version}" pungi-which python3 2>/dev/null)" || \
           PYTHON_PATH="$(PUNGI_VERSION="${version}" pungi-which python2 2>/dev/null)"; then
-        PUNGI_PREFIX_PATH="${PYTHON_PATH%/bin/*}"
+	    shopt -s extglob
+		# In some distros (Arch), Python can be found in sbin as well as bin
+		PUNGI_PREFIX_PATH="${PYTHON_PATH%/?(s)bin/*}"
         PUNGI_PREFIX_PATH="${PUNGI_PREFIX_PATH:-/}"
       else
-        echo "pungi: system version not found in PATH" >&2
+        echo "Pungi: system version not found in PATH" >&2
         exit 1
       fi
     else

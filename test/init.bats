@@ -53,7 +53,7 @@ OUT
 @test "fish instructions" {
   run pungi-init fish
   assert [ "$status" -eq 1 ]
-  assert_line 'pungi init - | source'
+  assert_line '# See the README for instructions on how to set up'
 }
 
 @test "option to skip rehash" {
