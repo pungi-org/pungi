@@ -26,11 +26,11 @@ load test_helper
 
 #Arch has Python at sbin as well as bin
 @test "prefix for system in sbin" {
-  mkdir -p "${PYENV_TEST_DIR}/sbin"
-  touch "${PYENV_TEST_DIR}/sbin/python"
-  chmod +x "${PYENV_TEST_DIR}/sbin/python"
-  PATH="${PYENV_TEST_DIR}/sbin:$PATH" PYENV_VERSION="system" run pyenv-prefix
-  assert_success "$PYENV_TEST_DIR"
+  mkdir -p "${PUNGI_TEST_DIR}/sbin"
+  touch "${PUNGI_TEST_DIR}/sbin/python"
+  chmod +x "${PUNGI_TEST_DIR}/sbin/python"
+  PATH="${PUNGI_TEST_DIR}/sbin:$PATH" PUNGI_VERSION="system" run pungi-prefix
+  assert_success "$PUNGI_TEST_DIR"
 }
 
 @test "prefix for system in /" {
@@ -46,6 +46,6 @@ OUT
 }
 
 @test "prefix for invalid system" {
-  PATH="$(path_without python python2 python3)" run pyenv-prefix system
-  assert_failure "pyenv: system version not found in PATH"
+  PATH="$(path_without python python2 python3)" run pungi-prefix system
+  assert_failure "Pungi: system version not found in PATH"
 }
