@@ -38,7 +38,7 @@ OLDIFS="$IFS"
 		PUNGI_PREFIX_PATH="${PYTHON_PATH%/?(s)bin/*}"
         PUNGI_PREFIX_PATH="${PUNGI_PREFIX_PATH:-/}"
       else
-        echo "pungi: system version not found in PATH" >&2
+        echo "Pungi: system version not found in PATH" >&2
         exit 1
       fi
     else
