@@ -1,15 +1,20 @@
-# Simple Python Version Management: Pungi
+![Pungi banner](./img/github-banner.png)
 
-[![Join the chat at https://gitter.im/yyuu/pyenv](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/yyuu/pyenv?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+# Pungi - manage Python versions [![CI Status](https://circleci.com/gh/pungi-org/pungi.svg?style=shield)](https://app.circleci.com/pipelines/github/pungi-org/pungi) [![Software License](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/pungi-org/pungi/trunk/LICENSE)
 
-Pungi lets you easily switch between multiple versions of Python. It's
-simple, unobtrusive, and follows the UNIX tradition of single-purpose
-tools that do one thing well.
-
-This project was forked from [rbenv](https://github.com/rbenv/rbenv) and
-[ruby-build](https://github.com/rbenv/ruby-build), and modified for Python.
+Pungi is a soft-fork of pyenv - both tools help you install and manage multiple Python versions at a time.
 
 ![Terminal output example](/terminal_output.png)
+
+Replace `pyenv` with `pungi` in the examples above and you get Pungi.
+
+
+
+
+
+
+
+
 
 
 ### What Pungi _does..._
@@ -179,7 +184,7 @@ For Pungi to install python correctly you should [**install the Python build dep
    1. Consider installing with [Homebrew](https://brew.sh):
       ```sh
       brew update
-      brew install pungi
+      brew install pungi-orb/tap/pungi
       ```
    2. Then follow the rest of the post-installation steps under [Basic GitHub Checkout](https://github.com/pungi-org/pungi#basic-github-checkout), starting with #2 ("Configure your shell's environment for Pungi").
 
