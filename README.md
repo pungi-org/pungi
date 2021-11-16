@@ -1,10 +1,8 @@
-# Simple Python Version Management: pungi
+# Simple Python Version Management: Pungi
 
 [![Join the chat at https://gitter.im/yyuu/pyenv](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/yyuu/pyenv?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-[![Build Status](https://travis-ci.org/pungi/pungi.svg?branch=master)](https://travis-ci.org/pungi/pungi)
-
-pungi lets you easily switch between multiple versions of Python. It's
+Pungi lets you easily switch between multiple versions of Python. It's
 simple, unobtrusive, and follows the UNIX tradition of single-purpose
 tools that do one thing well.
 
@@ -14,13 +12,13 @@ This project was forked from [rbenv](https://github.com/rbenv/rbenv) and
 ![Terminal output example](/terminal_output.png)
 
 
-### pungi _does..._
+### What Pungi _does..._
 
-* Let you **change the global Python version** on a per-user basis.
-* Provide support for **per-project Python versions**.
-* Allow you to **override the Python version** with an environment
+* Lets you **change the global Python version** on a per-user basis.
+* Provides support for **per-project Python versions**.
+* Allows you to **override the Python version** with an environment
   variable.
-* Search commands from **multiple versions of Python at a time**.
+* Searches for commands from **multiple versions of Python at a time**.
   This may be helpful to test across Python versions with [tox](https://pypi.python.org/pypi/tox).
 
 
@@ -183,7 +181,30 @@ For Pungi to install python correctly you should [**install the Python build dep
       brew update
       brew install pungi
       ```
-   2. Then follow the rest of the post-installation steps under [Basic GitHub Checkout](https://github.com/pyenv/pyenv#basic-github-checkout), starting with #2 ("Configure your shell's environment for Pungi").
+   2. Then follow the rest of the post-installation steps under [Basic GitHub Checkout](https://github.com/pungi-org/pungi#basic-github-checkout), starting with #2 ("Configure your shell's environment for Pungi").
+
+   3. OPTIONAL. To fix `brew doctor`'s warning _""config" scripts exist outside your system or Homebrew directories"_
+   
+      If you're going to build Homebrew formulae from source that link against `libpython`
+      like Tkinter or NumPy
+      _(This is only generally the case if you are a developer of such a formula,
+      or if you have an EOL version of macOS for which prebuilt bottles are no longer available
+      and are using such a formula)._
+      
+      To avoid them accidentally linking against a Pungi-provided Python,
+      add the following line into your interactive shell's configuration:
+      
+      * Bash/Zsh:
+      
+        ~~~bash
+        alias brew='env PATH="${PATH//$(pungi root)\/shims:/}" brew'
+        ~~~
+      
+      * Fish:
+
+        ~~~fish
+        alias brew="env PATH=(string replace (pungi root)/shims '' \"\$PATH\") brew"
+        ~~~
 
 ### Windows
 
@@ -227,7 +248,7 @@ easy to fork and contribute any changes back upstream.
    section below to figure out what you need to do in your specific case.
    
    **General MacOS note:**
-   Make sure that your terminal app is configured to run the shell as a login shell
+   [Make sure that your terminal app is configured to run the shell as a login shell](https://github.com/pyenv/pyenv/wiki/MacOS-login-shell)
    (especially if you're using an alternative terminal app and/or shell).
    The configuration samples for MacOS are written under this assumption and won't work otherwise.
    
@@ -290,7 +311,7 @@ easy to fork and contribute any changes back upstream.
 
          In MacOS, make sure that your terminal app runs the shell as a login shell.
 
-      - **Temporary environments (CI, batch jobs):**
+      - **Temporary environments (CI, Docker, batch jobs):**
 
          In CI/build environments, paths and the environment are usually already set up for you
          in one of the above ways.
@@ -301,6 +322,18 @@ easy to fork and contribute any changes back upstream.
          ~~~bash
          echo 'eval "$(pyenv init -)"'
          ~~~
+         
+         If you are installing Pyenv yourself as part of the batch job,
+         after installing the files, run the following in the job's shell
+         to be able to use it.
+         
+         ~~~bash
+         export PYENV_ROOT="$HOME/.pyenv"
+         export PATH="$PYENV_ROOT/bin:$PATH"    # if `pyenv` is not already on PATH
+         eval "$(pyenv init --path)"
+         eval "$(pyenv init -)"
+         ~~~
+
          
       **General Bash warning**: There are some systems where the `BASH_ENV` variable is configured
       to point to `.bashrc`. On such systems, you should almost certainly put the
@@ -348,7 +381,7 @@ easy to fork and contribute any changes back upstream.
          echo 'eval "$(pyenv init -)"' >> ~/.zshrc
          ~~~
         
-      - For **Fish shell**:
+    - For **Fish shell**:
 
         Execute this interactively:
         
