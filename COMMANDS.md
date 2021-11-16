@@ -16,11 +16,13 @@ The most common subcommands are:
 * [`pungi versions`](#pungi-versions)
 * [`pungi which`](#pungi-which)
 * [`pungi whence`](#pungi-whence)
-* [`pungi exec`](#pyenv-exec)
-* [`pungi root`](#pyenv-root)
-* [`pungi prefix`](#pyenv-prefix)
-* [`pungi hooks`](#pyenv-hooks)
-* [`pungi shims`](#pyenv-shims)
+* [`pungi exec`](#pungi-exec)
+* [`pungi root`](#pungi-root)
+* [`pungi prefix`](#pungi-prefix)
+* [`pungi hooks`](#pungi-hooks)
+* [`pungi shims`](#pungi-shims)
+* [`pungi init`](#pungi-init)
+* [`pungi completions`](#pungi-completions)
 
 
 ## `pungi commands`
@@ -43,8 +45,8 @@ configured local version. You can also unset the local version:
 
     $ pungi local --unset
 
-Previous versions of pungi stored local version specifications in a
-file named `.pungi-version`. For backwards compatibility, pungi will
+Previous versions of Pungi stored local version specifications in a
+file named `.pungi-version`. For backwards compatibility, Pungi will
 read a local version specified in an `.pungi-version` file, but a
 `.python-version` file in the same directory will take precedence.
 
@@ -284,7 +286,7 @@ Lists all Python versions with the given command installed.
     2.7.6
     3.3.3
 
-## `pyenv exec`
+## `pungi exec`
 
     `Usage: pyenv exec <command> [arg1 arg2...]`
 
@@ -299,14 +301,14 @@ is equivalent to:
 
     `PATH="$PYENV_ROOT/versions/3.9.7/bin:$PATH" pip install -r requirements.txt`
 
-## `pyenv root`
+## `pungi root`
 
 Displays the root directory where versions and shims are kept.
 
     $ pyenv root
     /home/user/.pyenv
 
-## `pyenv prefix`
+## `pungi prefix`
 
 Displays the directory where a Python version is installed. If no
 version is given, `pyenv prefix` displays the location of the
@@ -315,13 +317,13 @@ currently selected version.
     $ pyenv prefix 3.9.7
     /home/user/.pyenv/versions/3.9.7
 
-## `pyenv hooks`
+## `pungi hooks`
 
 Lists installed hook scripts for a given pyenv command.
 
     Usage: pyenv hooks <command>
 
-## `pyenv shims`
+## `pungi shims`
 
 List existing pyenv shims.
 
@@ -346,3 +348,20 @@ List existing pyenv shims.
     /home/user/.pyenv/shims/python3.9-gdb.py
     /home/user/.pyenv/shims/python3-config
     /home/user/.pyenv/shims/python-config
+
+## `pungi init`
+
+Configure the shell environment for pyenv
+
+    Usage: eval "$(pyenv init [-|--path] [--no-rehash] [<shell>])"
+
+      -                    Initialize shims directory, print PYENV_SHELL variable, completions path
+                           and shell function
+      --path               Print shims path
+      --no-rehash          Add no rehash command to output     
+
+## `pungi completions`
+
+Lists available completions for a given pyenv command.
+
+    Usage: pyenv completions <command> [arg1 arg2...]
