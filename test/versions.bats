@@ -14,14 +14,16 @@ setup() {
 stub_system_python() {
   local stub="${PUNGI_TEST_DIR}/bin/python"
   mkdir -p "$(dirname "$stub")"
-  touch "$stub" && chmod +x "$stub"
+  echo '#!/usr/bin/env bash' > "$stub"
+  echo 'echo "Python 3.10.0"' >> "$stub"
+  chmod +x "$stub"
 }
 
 @test "no versions installed" {
   stub_system_python
   assert [ ! -d "${PUNGI_ROOT}/versions" ]
   run pungi-versions
-  assert_success "* system (set by ${PUNGI_ROOT}/version)"
+  assert_success "* system-3.10.0 (set by ${PUNGI_ROOT}/version)"
 }
 
 @test "not even system python available" {
@@ -42,7 +44,7 @@ stub_system_python() {
   run pungi-versions
   assert_success
   assert_output <<OUT
-* system (set by ${PUNGI_ROOT}/version)
+* system-3.10.0 (set by ${PUNGI_ROOT}/version)
   3.3
 OUT
 }
@@ -61,7 +63,7 @@ OUT
   run pungi-versions
   assert_success
   assert_output <<OUT
-* system (set by ${PUNGI_ROOT}/version)
+* system-3.10.0 (set by ${PUNGI_ROOT}/version)
   2.7.6
   3.3.3
   3.4.0
@@ -75,7 +77,7 @@ OUT
   PUNGI_VERSION=3.3.3 run pungi-versions
   assert_success
   assert_output <<OUT
-  system
+  system-3.10.0
 * 3.3.3 (set by PUNGI_VERSION environment variable)
   3.4.0
 OUT
@@ -100,7 +102,7 @@ OUT
   run pungi-versions
   assert_success
   assert_output <<OUT
-  system
+  system-3.10.0
 * 3.3.3 (set by ${PUNGI_ROOT}/version)
   3.4.0
 OUT
@@ -114,7 +116,7 @@ OUT
   run pungi-versions
   assert_success
   assert_output <<OUT
-  system
+  system-3.10.0
 * 3.3.3 (set by ${PUNGI_TEST_DIR}/.python-version)
   3.4.0
 OUT

@@ -105,21 +105,37 @@ exists() {
 
 print_version() {
   if [[ ${BASH_VERSINFO[0]} -ge 4 && ${current_versions["$1"]} ]]; then
-    echo "${hit_prefix}$1 (set by $(pungi-version-origin))"
+    echo "${hit_prefix}$1$2 (set by $(pungi-version-origin))"
   elif (( ${BASH_VERSINFO[0]} <= 3 )) && exists "$1" "${current_versions[@]}"; then
-    echo "${hit_prefix}$1 (set by $(pungi-version-origin))"
+    echo "${hit_prefix}$1$2 (set by $(pungi-version-origin))"
   else
-    echo "${miss_prefix}$1"
+    echo "${miss_prefix}$1$2"
   fi
   num_versions=$((num_versions + 1))
 }
 
 # Include "system" in the non-bare output, if it exists
 if [ -n "$include_system" ] && \
-    (PUNGI_VERSION=system pungi-which python >/dev/null 2>&1 || \
-     PUNGI_VERSION=system pungi-which python3 >/dev/null 2>&1 || \
-     PUNGI_VERSION=system pungi-which python2 >/dev/null 2>&1) ; then
-  print_version system
+	(PUNGI_VERSION=system pungi-which python >/dev/null 2>&1 || \
+	PUNGI_VERSION=system pungi-which python3 >/dev/null 2>&1 || \
+	PUNGI_VERSION=system pungi-which python2 >/dev/null 2>&1) ; then
+
+		VER=$( python --version 2>/dev/null )
+		if [[ ! -z $VER ]]; then
+			print_version system "-${VER:7}"
+		else
+
+			VER=$( python3 --version 2>/dev/null )
+			if [[ ! -z $VER ]]; then
+				print_version system "-${VER:7}"
+			else
+
+				VER=$( python2 --version 2>/dev/null )
+				if [[ ! -z $VER ]]; then
+					print_version system "-${VER:7}"
+				fi
+			fi
+		fi
 fi
 
 shopt -s dotglob nullglob
