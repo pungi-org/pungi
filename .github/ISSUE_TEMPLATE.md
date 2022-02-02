@@ -4,14 +4,5 @@ If you are reporting a bug, please make sure to include the following informatio
 - [ ] pungi version:
 - [ ] Python version:
 - [ ] C Compiler information (e.g. gcc 7.3): 
-- [ ] Please reproduce the problem with debug tracing enabled and attach the resulting output as a gist
-  * If the problem happens in a Pungi invocation, you can turn on tracing by setting `PUNGI_DEBUG=1`, e.g. `env PUNGI_DEBUG=1 pungi install -v 3.6.4`
-    * If the problem is with `pungi install`, make sure to also enable its verbose mode (`-v`)
-  * If the problem happens outside of a Pungi invocation, enable shell trace output like this:
-     ```sh
-     export PS4='+(${(%):-%x}:${LINENO}): ${funcstack[0]:+${funcstack[0]}(): }'  #Zsh
-     export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'  #Bash
-     set -x
-     <reproduce the problem>
-     set +x
-     ```
+- [ ] Please attach the debug trace of the failing command as a gist:
+  * Run `env PUNGI_DEBUG=1 <faulty command> 2>&1 | tee trace.log` and attach `trace.log`. E.g. if you have a problem with installing Python, run `env PUNGI_DEBUG=1 pungi install -v <version> 2>&1 | tee trace.log` (note the `-v` option to `pungi install`).
