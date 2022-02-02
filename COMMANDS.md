@@ -5,6 +5,7 @@ first argument.
 
 The most common subcommands are:
 
+* [`pungi help`](#pungi-help)
 * [`pungi commands`](#pungi-commands)
 * [`pungi local`](#pungi-local)
 * [`pungi global`](#pungi-global)
@@ -23,6 +24,10 @@ The most common subcommands are:
 * [`pungi shims`](#pungi-shims)
 * [`pungi init`](#pungi-init)
 * [`pungi completions`](#pungi-completions)
+
+## `pungi help`
+
+List all available pungi commands along with a brief description of what they do. Run `pungi help <command>` for information on a specific command. For full documentation, see: https://github.com/pungi-org/pungi#readme
 
 
 ## `pungi commands`
@@ -288,18 +293,18 @@ Lists all Python versions with the given command installed.
 
 ## `pungi exec`
 
-    `Usage: pyenv exec <command> [arg1 arg2...]`
+    Usage: pyenv exec <command> [arg1 arg2...]
 
 Runs an executable by first preparing PATH so that the selected Python
 version's `bin` directory is at the front.
 
 For example, if the currently selected Python version is 3.9.7:
 
-    `pyenv exec pip install -r requirements.txt`
+    pyenv exec pip install -r requirements.txt
     
 is equivalent to:
 
-    `PATH="$PYENV_ROOT/versions/3.9.7/bin:$PATH" pip install -r requirements.txt`
+    PATH="$PYENV_ROOT/versions/3.9.7/bin:$PATH" pip install -r requirements.txt
 
 ## `pungi root`
 

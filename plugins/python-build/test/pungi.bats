@@ -183,7 +183,7 @@ OUT
 }
 
 @test "pungi-install has usage help preface" {
-  run head "$(which pungi-install)"
+  run head "$(command -v pungi-install)"
   assert_output_contains 'Usage: pungi install'
 }
 
@@ -212,6 +212,6 @@ OUT
 }
 
 @test "pungi-uninstall has usage help preface" {
-  run head "$(which pungi-uninstall)"
+  run head "$(command -v pungi-uninstall)"
   assert_output_contains 'Usage: pungi uninstall'
 }
