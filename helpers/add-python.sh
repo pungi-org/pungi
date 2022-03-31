@@ -13,11 +13,11 @@ for versionFull in "$@"; do
 	gzHash=$( sha256sum /tmp/python.tgz | cut -d " " -f 1 )
 	xzHash=$( sha256sum /tmp/python.tar.xz | cut -d " " -f 1 )
 
-	sed -e 's/%%VERSION%%/'"$versionFull"'/g' "./helpers/template" > "./plugins/python-build/share/python-build/$versionFull"
-	sed -i.bak 's/%%MINOR%%/'"${vMajor}${vMinor}"'/g' "./plugins/python-build/share/python-build/${versionFull}"
-	sed -i.bak 's!%%XZHASH%%!'"${xzHash}"'!g' "./plugins/python-build/share/python-build/${versionFull}"
-	sed -i.bak 's!%%GZHASH%%!'"${gzHash}"'!g' "./plugins/python-build/share/python-build/${versionFull}"
+	sed -e 's/%%VERSION%%/'"$versionFull"'/g' "${PUNGI_ROOT}/helpers/template" > "./plugins/python-build/share/python-build/$versionFull"
+	sed -i.bak 's/%%MINOR%%/'"${vMajor}${vMinor}"'/g' "${PUNGI_ROOT}/plugins/python-build/share/python-build/${versionFull}"
+	sed -i.bak 's!%%XZHASH%%!'"${xzHash}"'!g' "${PUNGI_ROOT}/plugins/python-build/share/python-build/${versionFull}"
+	sed -i.bak 's!%%GZHASH%%!'"${gzHash}"'!g' "${PUNGI_ROOT}/plugins/python-build/share/python-build/${versionFull}"
 
 	# This .bak thing above and below is a Linux/macOS compatibility fix
-	rm "./plugins/python-build/share/python-build/${versionFull}.bak"
+	rm "${PUNGI_ROOT}/plugins/python-build/share/python-build/${versionFull}.bak"
 done
